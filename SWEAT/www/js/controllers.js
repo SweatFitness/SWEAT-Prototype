@@ -11,17 +11,35 @@ angular.module('starter.controllers', [])
 }])
 
 
-.controller('LoginCtrl', function($scope, $state) {
+.controller('LoginCtrl', function($scope, $location, Auth) {
     $scope.data = {};
 
     $scope.loginEmail = function(){
-        console.log($scope.data.email);
+        Auth.$authWithPassword({
+            email: $scope.data.email,
+            password: $scope.data.password
+        }).then(function(authData) {
+            console.log('Authenticated successfully with payload: ', authData);
+            //TODO: redirect to home.html
+        }).catch(function(error) {
+            console.log('Login failed with error: ', error);
+        });
     };
 })
 
-.controller('SignupCtrl', function($scope, $state) {
+.controller('SignupCtrl', function($scope, $location, Auth) {
     $scope.data = {};
     $scope.signupEmail = function() {
-        
+        Auth.$createUser({
+            email: $scope.data.email,
+            password: $scope.data.password,
+            firstname: $scope.data.firstname,
+            lastname: $scope.data.lastname
+        }).then(function(userData) {
+            console.log('Successfully created user with uid: ', userData);
+            //TODO: authenticate user and recirect to home.html
+        }).catch(function(error) {
+            console.log('User creation failed with error: ', error);
+        });
     };
 })

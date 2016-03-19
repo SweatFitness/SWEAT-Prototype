@@ -40,24 +40,24 @@
         <br />
         <br />
 
-        <div class="list">
+        <div class="list" ng-controller="SignupCtrl">
           <label class="item item-input firstname-input">
             <span class="input-label">First Name</span>
-            <input type="text">
+            <input type="text" ng-model="data.firstname">
           </label>
           <label class="item item-input lastname-input">
             <span class="input-label">Last Name</span>
-            <input type="text">
+            <input type="text" ng-model="data.lastname">
           </label>
           <label class="item item-input email-input">
             <span class="input-label">Email</span>
-            <input type="text">
+            <input type="text" ng-model="data.email">
           </label>
           <label class="item item-input username-input">
             <span class="input-label">Password</span>
-            <input type="password">
+            <input type="password" ng-model="data.password">
           </label>
-          <button class="button button-full button-stable login-btn">
+          <button class="button button-full button-stable login-btn" ng-click="signupEmail()">
             Sign Up
           </button>
         </div>
