@@ -1,4 +1,4 @@
-angular.module('starter.controller', [])
+angular.module('starter.controllers', [])
 
 .factory('Auth', function ($firebaseAuth) {
     var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
@@ -11,3 +11,17 @@ angular.module('starter.controller', [])
 }])
 
 
+.controller('LoginCtrl', function($scope, $state) {
+    $scope.data = {};
+
+    $scope.loginEmail = function(){
+        console.log($scope.data.email);
+    };
+})
+
+.controller('SignupCtrl', function($scope, $state) {
+    $scope.data = {};
+    $scope.signupEmail = function() {
+        
+    };
+})
