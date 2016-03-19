@@ -7,6 +7,7 @@
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -28,12 +29,48 @@
     <script src="https://cdn.firebase.com/libs/angularfire/1.1.4/angularfire.min.js"></script>
   </head>
   <body ng-app="starter">
-
     <ion-pane>
-      <ion-header-bar class="bar-stable">
-        <h1 class="title">Ionic Blank Starter</h1>
-      </ion-header-bar>
+      
       <ion-content>
+      <br /> <!-- Jank as fuck but need to get shit done quick -->
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <div class="col header logo text-center">
+        <img src="./img/logo.png" class="logo"/>
+      </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="text">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password">
+        </label>
+      </div>
+      <a href="home.html">
+        <button class="button button-full button-stable login-btn">
+          Log In
+        </button>
+      </a>
+      <div class="text-center">
+        <a href="account-creation.html" class="text-center">
+          Or create an account
+        </a>
+      </div>
       </ion-content>
     </ion-pane>
   </body>
