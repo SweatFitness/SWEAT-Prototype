@@ -51,7 +51,7 @@ angular.module('starter.controllers', [])
     $scope.pendingWorkouts = [0,1,2];
 })
 
-.controller('ScheduleCtrl', function($scope, $state, $ionicPopup, Workouts) {
+.controller('ScheduleCtrl', function($scope, $state, $ionicPopup, Auth, Workouts) {
     // local variables, functions
     var __makeDateTime = function(date, time) {
         // time in the day in seconds
@@ -109,13 +109,17 @@ angular.module('starter.controllers', [])
     };
     $scope.data.endTime = $scope.data.endTimepickerObj.inputEpochTime;
     $scope.data.endDateTime = __makeDateTime(__now, $scope.data.endTime);
+
     $scope.createWorkout = function() {
-        Workouts.push({
+        Workouts.$add({
             workout_type: $scope.data.workout_type,
             location: $scope.data.location,
             lookingfor: $scope.data.lookingfor,
             startDateTime: $scope.data.startDateTime.toJSON(),
-            endDateTime: $scope.data.endDateTime.toJSON()
+            endDateTime: $scope.data.endDateTime.toJSON(),
+            onwerUid: Auth.$getAuth().uid,
+            matched: false,
+            confirmed: false
         });
     };
 
