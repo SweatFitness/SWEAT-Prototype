@@ -50,3 +50,17 @@ angular.module('starter.controllers', [])
     $scope.confirmedWorkouts = [0,1,2];
     $scope.pendingWorkouts = [0,1,2];
 })
+
+.controller('ScheduleCtrl', function($scope, $state, Workouts) {
+    $scope.data = {};
+
+    $scope.createWorkout = function() {
+        Workouts.push({
+            workout_type: $scope.data.workout_type,
+            location: $scope.data.location,
+            lookingfor: $scope.data.lookingfor,
+            // TODO: datetime
+        });
+    };
+
+})

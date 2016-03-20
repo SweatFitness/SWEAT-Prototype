@@ -43,7 +43,8 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers'])
         url: '/schedule',
         views: {
             'schedule-tab': {
-                templateUrl: 'templates/schedule.html'
+                templateUrl: 'templates/schedule.html',
+                controller: 'ScheduleCtrl'
             }
         }
     })

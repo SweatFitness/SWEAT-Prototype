@@ -9,13 +9,17 @@
     <a class="button">F</a>
     <a class="button">S</a>
 </div>
+
+<!-- TODO: Replace this with a time picker --> 
 <ion-checkbox ng-model="isChecked">Checkbox</ion-checkbox>
+<!-------------------------------------------->
+
 <div class="list">
     <label class="item item-input item-select">
         <div class="input-label">
             Workout
         </div>
-        <select>
+        <select name="workout_type" ng-model="data.workout_type">
             <option selected>Weightlifting</option>
             <option>Cardio</option>
         </select>
@@ -24,7 +28,7 @@
         <div class="input-label">
             Location
         </div>
-        <select>
+        <select name="location" ng-model="data.location">
             <option selected>SPAC</option>
             <option>Blom</option>
             <option>Patten</option>
@@ -34,11 +38,16 @@
         <div class="input-label">
             Looking For
         </div>
-        <select>
+        <select name="lookingfor" ng-model="data.lookingfor">
             <option selected>Workout Buddy</option>
             <option>Expert/Trainer</option>
         </select>
     </label>
+
+    <button class="button button-full button-stable submit-btn" ng-click="createWorkout()">
+        Create Workout
+    </button>
+
 </div>
 </ion-content>
 </ion-view>
