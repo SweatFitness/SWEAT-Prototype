@@ -51,16 +51,80 @@ angular.module('starter.controllers', [])
     $scope.pendingWorkouts = [0,1,2];
 })
 
-.controller('ScheduleCtrl', function($scope, $state, Workouts) {
-    $scope.data = {};
+.controller('ScheduleCtrl', function($scope, $state, $ionicPopup, Workouts) {
+    // local variables, functions
+    var __makeDateTime = function(date, time) {
+        // time in the day in seconds
+        var hours = parseInt(time/3600);
+        var mins = parseInt((time - hours*3600)/60);
+        return new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate(),
+                hours, 
+                mins,
+                0, 0);
+    }
+    var __now = new Date();
 
+    $scope.data = {};
+    $scope.data.selectedDate = __now;
+    $scope.data.selectedDay = __now.getDay();
+    $scope.data.startTimepickerObj = {
+        inputEpochTime: (__now.getHours() + 1) * 60 * 60,  //Optional
+        step: 15,  //Optional
+        format: 12,  //Optional
+        titleLabel: 'Start Time',  //Optional
+        setLabel: 'Set',  //Optional
+        closeLabel: 'Close',  //Optional
+        setButtonType: 'button-positive',  //Optional
+        closeButtonType: 'button-stable',  //Optional
+        callback: function (val) {    //Mandatory
+            if (val) {
+                this.inputEpochTime = val;
+                $scope.data.startTime = val;
+                $scope.data.startDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.startTime);
+            }
+        }
+    };
+    $scope.data.startTime = $scope.data.startTimepickerObj.inputEpochTime;
+    $scope.data.startDateTime = __makeDateTime(__now, $scope.data.startTime);
+
+    $scope.data.endTimepickerObj = {
+        inputEpochTime: (__now.getHours() + 2) * 60 * 60,  //Optional
+        step: 15,  //Optional
+        format: 12,  //Optional
+        titleLabel: 'Start Time',  //Optional
+        setLabel: 'Set',  //Optional
+        closeLabel: 'Close',  //Optional
+        setButtonType: 'button-positive',  //Optional
+        closeButtonType: 'button-stable',  //Optional
+        callback: function (val) {    //Mandatory
+            if (val) {
+                this.inputEpochTime = val;
+                $scope.data.endTime = val;
+                $scope.data.endDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.endTime);
+            }
+        }
+    };
+    $scope.data.endTime = $scope.data.endTimepickerObj.inputEpochTime;
+    $scope.data.endDateTime = __makeDateTime(__now, $scope.data.endTime);
     $scope.createWorkout = function() {
         Workouts.push({
             workout_type: $scope.data.workout_type,
             location: $scope.data.location,
             lookingfor: $scope.data.lookingfor,
-            // TODO: datetime
+            startDateTime: $scope.data.startDateTime.toJSON(),
+            endDateTime: $scope.data.endDateTime.toJSON()
         });
     };
 
+    $scope.setDay = function(day) {
+        $scope.data.selectedDay = day;
+        var dateDiff = day - __now.getDay();
+        dateDiff = (dateDiff < 0) ? dateDiff + 7 : dateDiff;
+        $scope.data.selectedDate = new Date(__now.getTime() + dateDiff*24*60*60*1000);
+        $scope.data.startDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.startTime);
+        $scope.data.endDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.endTime);
+    }
 })

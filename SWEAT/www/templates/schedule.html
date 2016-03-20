@@ -1,17 +1,28 @@
 <ion-view view-title="My Schedule">
 <ion-content class="padding">
 <div class="button-bar">
-    <a class="button">S</a>
-    <a class="button">M</a>
-    <a class="button">Tu</a>
-    <a class="button">W</a>
-    <a class="button">Th</a>
-    <a class="button">F</a>
-    <a class="button">S</a>
+    <a class="button" ng-click="setDay(0)" ng-class="{'active': data.selectedDay == 0}">S</a>
+    <a class="button" ng-click="setDay(1)" ng-class="{'active': data.selectedDay == 1}">M</a>
+    <a class="button" ng-click="setDay(2)" ng-class="{'active': data.selectedDay == 2}">Tu</a>
+    <a class="button" ng-click="setDay(3)" ng-class="{'active': data.selectedDay == 3}">W</a>
+    <a class="button" ng-click="setDay(4)" ng-class="{'active': data.selectedDay == 4}">Th</a>
+    <a class="button" ng-click="setDay(5)" ng-class="{'active': data.selectedDay == 5}">F</a>
+    <a class="button" ng-click="setDay(6)" ng-class="{'active': data.selectedDay == 6}">S</a>
 </div>
 
 <!-- TODO: Replace this with a time picker --> 
-<ion-checkbox ng-model="isChecked">Checkbox</ion-checkbox>
+<ionic-timepicker input-obj="data.startTimepickerObj">
+    <button class="button button-block button-stable overflowShow">
+        <standard-time-meridian etime='data.startTimepickerObj.inputEpochTime'>
+        </standard-time-meridian>
+    </button>
+</ionic-timepicker>
+<ionic-timepicker input-obj="data.endTimepickerObj">
+    <button class="button button-block button-stable overflowShow">
+        <standard-time-meridian etime='data.endTimepickerObj.inputEpochTime'>
+        </standard-time-meridian>
+    </button>
+</ionic-timepicker>
 <!-------------------------------------------->
 
 <div class="list">
