@@ -20,7 +20,7 @@ angular.module('starter.controllers', [])
             password: $scope.data.password
         }).then(function(authData) {
             console.log('Authenticated successfully with payload: ', authData);
-            $state.go('home');
+            $state.go('tab');
         }).catch(function(error) {
             console.log('Login failed with error: ', error);
         });

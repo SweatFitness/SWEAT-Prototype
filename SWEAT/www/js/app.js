@@ -35,8 +35,8 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers'])
         templateUrl: 'templates/signup.html',
         controller: 'SignupCtrl'
     });
-    $stateProvider.state('home', {
-        url: '/home',
-        templateUrl: 'home.html'
+    $stateProvider.state('tab', {
+        url: '/tab',
+        templateUrl: 'templates/tabs.html'
     });
 })
