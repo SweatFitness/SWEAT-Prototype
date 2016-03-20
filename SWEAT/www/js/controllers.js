@@ -11,7 +11,7 @@ angular.module('starter.controllers', [])
 }])
 
 
-.controller('LoginCtrl', function($scope, $location, Auth) {
+.controller('LoginCtrl', function($scope, $state, Auth) {
     $scope.data = {};
 
     $scope.loginEmail = function(){
@@ -20,14 +20,14 @@ angular.module('starter.controllers', [])
             password: $scope.data.password
         }).then(function(authData) {
             console.log('Authenticated successfully with payload: ', authData);
-            //TODO: redirect to home.html
+            $state.go('home');
         }).catch(function(error) {
             console.log('Login failed with error: ', error);
         });
     };
 })
 
-.controller('SignupCtrl', function($scope, $location, Auth) {
+.controller('SignupCtrl', function($scope, $state, $ionicHistory, Auth) {
     $scope.data = {};
     $scope.signupEmail = function() {
         Auth.$createUser({
@@ -42,4 +42,7 @@ angular.module('starter.controllers', [])
             console.log('User creation failed with error: ', error);
         });
     };
+    $scope.cancelSignup = function() {
+        $ionicHistory.goBack();
+    }
 })

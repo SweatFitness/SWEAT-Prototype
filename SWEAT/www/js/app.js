@@ -23,3 +23,20 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers'])
   });
 })
 
+.config(function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/');
+    $stateProvider.state('login', {
+        url: '/',
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
+    });
+    $stateProvider.state('signup', {
+        url: '/signup',
+        templateUrl: 'templates/signup.html',
+        controller: 'SignupCtrl'
+    });
+    $stateProvider.state('home', {
+        url: '/home',
+        templateUrl: 'home.html'
+    });
+})
