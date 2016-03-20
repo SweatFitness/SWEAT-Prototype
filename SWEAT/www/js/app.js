@@ -51,7 +51,8 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers'])
         url: '/match',
         views: {
             'match-tab': {
-                templateUrl: 'templates/match.html'
+                templateUrl: 'templates/match.html',
+                controller: 'MatchCtrl'
             }
         }
     })

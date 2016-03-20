@@ -6,7 +6,7 @@ angular.module('starter.controllers', [])
 })
 
 .factory('Workouts', ['$firebaseArray', function($firebaseArray) {
-    var worktoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
+    var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
     return $firebaseArray(workoutsRef);
 }])
 
@@ -42,4 +42,11 @@ angular.module('starter.controllers', [])
     $scope.cancelSignup = function() {
         $ionicHistory.goBack();
     }
+})
+
+.controller('MatchCtrl', function($scope, $state, Workouts) {
+    $scope.Workouts = Workouts;
+    //TODO: divide workouts into confirmed and pending
+    $scope.confirmedWorkouts = [0,1,2];
+    $scope.pendingWorkouts = [0,1,2];
 })

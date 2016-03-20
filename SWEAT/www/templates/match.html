@@ -1,3 +1,18 @@
 <ion-view view-title="Match">
-    
+    <ion-content>
+        <div class="list list-inset">
+            <div class="item item-divider">
+                Confirmed
+            </div>
+            <a class="item" ng-repeat="workout in confirmedWorkouts">
+                Workout Detail
+            </a>
+            <div class="item item-divider">
+                Pending
+            </div>
+            <a class="item" ng-repeat="workout in pendingWorkouts">
+                Workout Detail
+            </a>
+        </div>
+    </ion-content>    
 </ion-view>
