@@ -1,45 +1,45 @@
-<ion-view view-title="Schedule">
-    <ion-content class="padding">
-        <div class="button-bar">
-          <a class="button">S</a>
-          <a class="button">M</a>
-          <a class="button">Tu</a>
-          <a class="button">W</a>
-          <a class="button">Th</a>
-          <a class="button">F</a>
-          <a class="button">S</a>
+<ion-view view-title="My Schedule">
+<ion-content class="padding">
+<div class="button-bar">
+    <a class="button">S</a>
+    <a class="button">M</a>
+    <a class="button">Tu</a>
+    <a class="button">W</a>
+    <a class="button">Th</a>
+    <a class="button">F</a>
+    <a class="button">S</a>
+</div>
+<ion-checkbox ng-model="isChecked">Checkbox</ion-checkbox>
+<div class="list">
+    <label class="item item-input item-select">
+        <div class="input-label">
+            Workout
         </div>
-        <ion-checkbox ng-model="isChecked">Checkbox</ion-checkbox>
-        <div class="list">
-          <label class="item item-input item-select">
-            <div class="input-label">
-              Workout
-            </div>
-            <select>
-              <option selected>Weightlifting</option>
-              <option>Cardio</option>
-            </select>
-          </label>
-          <label class="item item-input item-select">
-            <div class="input-label">
-              Location
-            </div>
-            <select>
-              <option selected>SPAC</option>
-              <option>Blom</option>
-              <option>Patten</option>
-            </select>
-          </label>
-            <label class="item item-input item-select">
-            <div class="input-label">
-              Looking For
-            </div>
-            <select>
-              <option selected>Workout Buddy</option>
-              <option>Expert/Trainer</option>
-            </select>
-            </label>
+        <select>
+            <option selected>Weightlifting</option>
+            <option>Cardio</option>
+        </select>
+    </label>
+    <label class="item item-input item-select">
+        <div class="input-label">
+            Location
         </div>
-    </ion-content>
+        <select>
+            <option selected>SPAC</option>
+            <option>Blom</option>
+            <option>Patten</option>
+        </select>
+    </label>
+    <label class="item item-input item-select">
+        <div class="input-label">
+            Looking For
+        </div>
+        <select>
+            <option selected>Workout Buddy</option>
+            <option>Expert/Trainer</option>
+        </select>
+    </label>
+</div>
+</ion-content>
 </ion-view>
 
