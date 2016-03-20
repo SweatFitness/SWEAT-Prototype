@@ -1,13 +1,25 @@
 <ion-view>
   <ion-tabs class="tabs-icon-top tabs-positive">
-    <ion-tab title="My Schedule" icon="ion-android-calendar" ng-sref="/tab/schedule">
-      <ion-nav-view name="home-tab"></ion-nav-view>
+    <ion-tab title="My Schedule" icon="ion-android-calendar" ui-sref="tab.schedule">
+      <ion-nav-bar>
+        <ion-nav-back-button class="button-icon ion-android-arrow-back">
+        </ion-nav-back-button>
+      </ion-nav-bar>
+      <ion-nav-view name="schedule-tab"></ion-nav-view>
     </ion-tab>
-    <ion-tab title="Match" icon="ion-ios-cart" ng-sref="/tab/match">
-      <ion-nav-view name="about-tab"></ion-nav-view>
+    <ion-tab title="Match" icon="ion-ios-cart" ui-sref="tab.match">
+      <ion-nav-bar>
+        <ion-nav-back-button class="button-icon ion-android-arrow-back">
+        </ion-nav-back-button>
+      </ion-nav-bar>
+      <ion-nav-view name="match-tab"></ion-nav-view>
     </ion-tab>
-    <ion-tab title="Today's Workouts" icon="ion-cloud" ng-sref="/tab/tdoday">
-      <ion-nav-view name="contact-tab"></ion-nav-view>
+    <ion-tab title="Today's Workouts" icon="ion-cloud" ui-sref="tab.today">
+      <ion-nav-bar>
+        <ion-nav-back-button class="button-icon ion-android-arrow-back">
+        </ion-nav-back-button>
+      </ion-nav-bar>
+      <ion-nav-view name="today-tab"></ion-nav-view>
     </ion-tab>
   </ion-tabs>
 </ion-view>

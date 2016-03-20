@@ -29,14 +29,38 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers'])
         url: '/',
         templateUrl: 'templates/login.html',
         controller: 'LoginCtrl'
-    });
-    $stateProvider.state('signup', {
+    })
+    .state('signup', {
         url: '/signup',
         templateUrl: 'templates/signup.html',
-        controller: 'SignupCtrl'
-    });
-    $stateProvider.state('tab', {
+        controller: 'LoginCtrl'
+    })
+    .state('tab', {
         url: '/tab',
         templateUrl: 'templates/tabs.html'
+    })
+    .state('tab.schedule', {
+        url: '/schedule',
+        views: {
+            'schedule-tab': {
+                templateUrl: 'templates/schedule.html'
+            }
+        }
+    })
+    .state('tab.match', {
+        url: '/match',
+        views: {
+            'match-tab': {
+                templateUrl: 'templates/match.html'
+            }
+        }
+    })
+    .state('tab.today', {
+        url: '/today',
+        views: {
+            'today-tab': {
+                templateUrl: 'templates/today.html'
+            }
+        }
     });
 })

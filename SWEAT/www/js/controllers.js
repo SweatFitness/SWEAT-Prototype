@@ -25,10 +25,7 @@ angular.module('starter.controllers', [])
             console.log('Login failed with error: ', error);
         });
     };
-})
 
-.controller('SignupCtrl', function($scope, $state, $ionicHistory, Auth) {
-    $scope.data = {};
     $scope.signupEmail = function() {
         Auth.$createUser({
             email: $scope.data.email,
@@ -37,7 +34,7 @@ angular.module('starter.controllers', [])
             lastname: $scope.data.lastname
         }).then(function(userData) {
             console.log('Successfully created user with uid: ', userData);
-            //TODO: authenticate user and recirect to home.html
+            $scope.loginEmail();
         }).catch(function(error) {
             console.log('User creation failed with error: ', error);
         });
