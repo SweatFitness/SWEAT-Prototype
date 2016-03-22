@@ -181,7 +181,7 @@ angular.module('starter.controllers', [])
             matchedWith: '',
             matched: false,
             confirmed: false,
-            myId: ''
+            myID: ''
         };
         console.log('Creating workout: ' +  JSON.stringify(req));
         $http({

@@ -110,7 +110,7 @@ app.post('/', function(req, res) {
                 var newWorkoutRef = workoutsRef.push(currentReq);
 
                 currentReq['myID'] = newWorkoutRef.key();
-                updateWorkout(newKey, currentReq);
+                updateWorkout(newWorkoutRef.key(), currentReq);
                 
                 if (currentReq['matched']) {
                     console.log('logging current one');
