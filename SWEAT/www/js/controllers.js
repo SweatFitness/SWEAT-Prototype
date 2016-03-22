@@ -44,11 +44,36 @@ angular.module('starter.controllers', [])
     }
 })
 
-.controller('MatchCtrl', function($scope, $state, Workouts) {
+.controller('MatchCtrl', function($scope, $state, $ionicListDelegate, Workouts) {
     $scope.Workouts = Workouts;
-    //TODO: divide workouts into confirmed and pending
+
     $scope.confirmedWorkouts = [0,1,2];
-    $scope.pendingWorkouts = [0,1,2];
+    $scope.receivedWorkouts = [0,1,2];
+    $scope.sentWorkouts = [0,1,2];
+    //TODO: load actual data from server
+    $scope.doRefresh = function() {
+        //TODO: send request to server, get result, reload workouts, stop spinning
+        // just stop the ion-refresher from spinning for now
+        $scope.$broadcast('scroll.refreshComplete');
+    }
+    $scope.listCanSwipe = function() {
+        $ionicListDelegate.canSwipeItems(true);
+    }
+
+    $scope.confirmWorkout = function(item) {
+        //TODO: write this function
+        console.log('confirm');
+    }
+
+    $scope.declineWorkout = function(item) {
+        //TODO: write this function
+        console.log('decline');
+    }
+
+    $scope.deleteWorkout = function(item) {
+        //TODO: write this function
+        console.log('delete');
+    }
 })
 
 .controller('ScheduleCtrl', function($scope, $state, $ionicPopup, Auth, Workouts) {

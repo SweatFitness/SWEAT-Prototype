@@ -1,18 +1,38 @@
 <ion-view view-title="Match">
     <ion-content>
-        <div class="list list-inset">
+        <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+        <ion-list type="card" can-swipe="listCanSwipe()">
             <div class="item item-divider">
                 Confirmed
             </div>
-            <a class="item" ng-repeat="workout in confirmedWorkouts">
-                Workout Detail
-            </a>
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in confirmedWorkouts">
+                <img></img>
+                <h2>Partner Name</h2>
+                <p>Workout Detail</p>
+            </ion-item>
             <div class="item item-divider">
-                Pending
+                Received
             </div>
-            <a class="item" ng-repeat="workout in pendingWorkouts">
-                Workout Detail
-            </a>
-        </div>
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in receivedWorkouts">
+                <img></img>
+                <h2>Partner Name</h2>
+                <p>Workout Detail</p>
+                <ion-option-button class="button-positive ion-checkmark" 
+                                    ng-click="confirmWorkout(item)">
+                </ion-option-button>
+                <ion-option-button class="button-assertive ion-close" 
+                                    ng-click="declineWorkout(item)">
+                </ion-option-button>
+            </ion-item>
+            <div class="item item-divider">
+                Sent
+            </div>
+            <ion-item class="item-text-wrap" ng-repeat="workout in sentWorkouts">
+                <h2>Workout Detail</h2>
+                <ion-option-button class="button-assertive ion-close" 
+                                    ng-click="deleteWorkout(item)">
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
     </ion-content>    
 </ion-view>
