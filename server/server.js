@@ -11,20 +11,38 @@ app.use(bodyparser.json());
 app.listen(process.env.PORT || 8080);
 
 
-app.get('/', function(req, res) {
-    console.log('some req happened');
-        var jsonStr = '';
+app.get('/match/:uid', function(req, res) {
+    var uid = req.params.id;
+    workoutsRef.once("value", function(data) {
+        var snapshot = data.val();
+        var confirmed = [];
+        var pending = [];
+        var requested = [];
+        for (var id in snapshot) {
+            if (snapshot.hasOwnProperty(id)) {
+                if (snapshot[id]['ownerUid'] === uid) {
+                    if (snapshot[id]['confirmed']) {
+                        confirmed.push(snapshot[id]);
+                    } else if (snapshot[id]['matched']) {
+                        pending.push(snapshot[id]);
+                    } else {
+                        requested.push(snapshot[id]);
+                    }
+                }
+            }
+        }
 
-        req.on('data', function(data) {
-            jsonStr += data;
+        res.send({
+            'confirmed': confirmed,
+            'pending': pending,
+            'requested': requested,
         });
-
-        req.on('end', function() {
-            console.log(JSON.parse(jsonStr));
-        });
-
-        res.send('hello');
+    });
 });
+
+app.get('/', function(req, res)) {
+
+}
 
 app.post('/', function(req, res) {
     console.log('received post');
