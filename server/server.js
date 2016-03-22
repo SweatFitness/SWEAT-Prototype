@@ -35,8 +35,6 @@ app.post('/', function(req, res) {
         });
 
         req.on('end', function() {
-            var matchedID = 
-
             var currentReq = JSON.parse(jsonStr);
             workoutsRef.once("value", function(data) {
                 var snapshot = data.val();
@@ -63,8 +61,8 @@ app.post('/', function(req, res) {
 });
 
 var updateWorkout = function(id, data) {
-    workoutsRef.update({
-        id: data,
+    workoutsRef.child(id).update({
+        data
     });
 }
 
