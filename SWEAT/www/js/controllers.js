@@ -16,7 +16,7 @@ angular.module('starter.controllers', [])
 }])
 
 
-.controller('LoginCtrl', ['$scope', '$state', 'Auth', function($scope, $state, Auth) {
+.controller('LoginCtrl', ['$scope', '$state', 'Auth', 'UsersList', function($scope, $state, Auth, UsersList) {
     $scope.data = {};
     $scope.usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
@@ -54,15 +54,24 @@ angular.module('starter.controllers', [])
 }])
 
 .controller('MatchCtrl', ['$http', '$scope','$state', '$ionicListDelegate', 'Workouts', 'Auth', 'UsersList', function($http, $scope, $state, $ionicListDelegate, Workouts, Auth, UsersList) {
-    $scope.Workouts = Workouts;
-    $scope.Auth = Auth;
     $scope.UsersList = UsersList;
-
     $scope.confirmedWorkouts = [];
     $scope.pendingWorkouts = [];
     $scope.requestedWorkouts = [];
 
     $scope.getUserName = function(uid) {
+        return UsersList.$getRecord(uid).firstname + " " + UsersList.$getRecord(uid).lastname;
+    }
+    $scope.getDateFrom = function(dateString) {
+        var date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+    $scope.getTimeFrom = function(dateString) {
+        var date = new Date(dateString);
+        return date.toLocaleTimeString();
+    }
+    $scope.getWorkout = function(id) {
+        return Workouts.$getRecord(id);
     }
 
     $scope.doRefresh = function() {
@@ -73,7 +82,6 @@ angular.module('starter.controllers', [])
         }).then(function(response) {
             var workouts = response.data
             console.log(workouts);
-            console.log($scope.UsersList);
             $scope.confirmedWorkouts = workouts.confirmed;
             $scope.pendingWorkouts = workouts.pending;
             $scope.requestedWorkouts = workouts.requested;
@@ -89,18 +97,15 @@ angular.module('starter.controllers', [])
         $ionicListDelegate.canSwipeItems(true);
     }
 
-    $scope.confirmWorkout = function(item) {
-        //TODO: write this function
-        console.log('confirm');
+    $scope.confirmWorkout = function(workout) {
+        console.log(workout.myId);
     }
 
-    $scope.declineWorkout = function(item) {
-        //TODO: write this function
+    $scope.declineWorkout = function(workout) {
         console.log('decline');
     }
 
     $scope.deleteWorkout = function(item) {
-        //TODO: write this function
         console.log('delete');
     }
 }])
@@ -175,7 +180,8 @@ angular.module('starter.controllers', [])
             partnerUid: '',
             matchedWith: '',
             matched: false,
-            confirmed: false
+            confirmed: false,
+            myId: ''
         };
         console.log('Creating workout: ' +  JSON.stringify(req));
         $http({

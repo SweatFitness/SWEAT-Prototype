@@ -1,18 +1,22 @@
 <ion-view view-title="Match">
     <ion-content>
         <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
-        <ion-list type="card" can-swipe="listCanSwipe()">
+        <ion-list type="card" can-swipe="listCanSwipe()" ng-show="UsersList !== []">
             <div class="item item-divider">
                 Confirmed
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in confirmedWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2></h2>
-                <p>Workout Detail</p>
+                <h2>{{getUserName(workout.ownerUid)}}</h2>
+                <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
+                <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
+                <p>Type: {{workout.workout_type}}</p>
                 <div class="partner-avatar-confirmed">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
-                    <h2>Partner Name</h2>
-                    <p>Parter Workout Detail</p>
+                    <h2>{getUserName(workout.partnerUid)}}</h2>
+                    <p>At {{getWorkout(workout.matchedWith).location}} on {{getDateFrom(getWorkout(workout.matchedWith).startDateTime)}}</p>
+                    <p>From {{getTimeFrom(getWorkout(workout.matchedWith).startDateTime)}} to {{getTimeFrom(getWorkout(workout.matchedWith).endDateTime)}}</p>
+                    <p>Type: {{getWorkout(workout.matchedWith).workout_type}}</p>
                 </div>
             </ion-item>
             <div class="item item-divider">
@@ -20,18 +24,22 @@
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in pendingWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2>{{getUserName(Auth.$getAuth().uid)}}</h2>
-                <p>Workout Detail</p>
+                <h2>{{getUserName(workout.ownerUid)}}</h2>
+                <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
+                <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
+                <p>Type: {{workout.workout_type}}</p>
                 <div class="partner-avatar">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
-                    <h2>Partner Name</h2>
-                    <p>Parter Workout Detail</p>
+                    <h2>{{getUserName(workout.partnerUid)}}</h2>
+                    <p>At {{getWorkout(workout.matchedWith).location}} on {{getDateFrom(getWorkout(workout.matchedWith).startDateTime)}}</p>
+                    <p>From {{getTimeFrom(getWorkout(workout.matchedWith).startDateTime)}} to {{getTimeFrom(getWorkout(workout.matchedWith).endDateTime)}}</p>
+                    <p>Type: {{getWorkout(workout.matchedWith).workout_type}}</p>
                 </div>
                 <ion-option-button class="button-positive ion-checkmark" 
-                                    ng-click="confirmWorkout(item)">
+                                    ng-click="confirmWorkout(workout)">
                 </ion-option-button>
                 <ion-option-button class="button-assertive ion-close" 
-                                    ng-click="declineWorkout(item)">
+                                    ng-click="declineWorkout(workout)">
                 </ion-option-button>
             </ion-item>
             <div class="item item-divider">
@@ -39,10 +47,12 @@
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in requestedWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2>Your Name</h2>
-                <p>Workout Detail</p>
+                <h2>{{getUserName(workout.ownerUid)}}</h2>
+                <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
+                <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
+                <p>Type: {{workout.workout_type}}</p>
                 <ion-option-button class="button-assertive ion-close" 
-                                    ng-click="deleteWorkout(item)">
+                                    ng-click="deleteWorkout(workout)">
                 </ion-option-button>
             </ion-item>
         </ion-list>
