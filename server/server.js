@@ -36,6 +36,9 @@ app.post('/', function(req, res) {
 
         req.on('end', function() {
             var currentReq = JSON.parse(jsonStr);
+            var idToUpdate;
+            var dataToUpdate = {};
+
             workoutsRef.once("value", function(data) {
                 var snapshot = data.val();
                 for (var id in snapshot) {
@@ -44,26 +47,36 @@ app.post('/', function(req, res) {
                             console.log('IS A MATCH!!!!');
                             currentReq['matched'] = true;
                             snapshot[id]['matched'] = true;
+
+                            currentReq['matchedWith'] = id;
                             currentReq['partnerUid'] = snapshot[id]['ownerUid'];
                             snapshot[id]['partnerUid'] = currentReq['ownerUid'];
-
-                            updateWorkout(id, snapshot[id]);
-                            break;
+                            idToUpdate = id;
+                            dataToUpdate = snapshot[id];
 
                         }
                     }
                 }
                 
-                workoutsRef.push(currentReq);
+                var newWorkoutRef = workoutsRef.push(currentReq);
+                if (currentReq['matched']) {
+                    console.log('logging current one');
+
+                    var newKey = newWorkoutRef.key();
+                    console.log('updating id: ' + idToUpdate);
+                    console.log('key is ' + newKey);
+                    dataToUpdate['matchedWith'] = newKey;
+                    updateWorkout(idToUpdate, dataToUpdate);
+                }
             });
         });
 
 });
 
 var updateWorkout = function(id, data) {
-    workoutsRef.child(id).update({
+    workoutsRef.child(id).update(
         data
-    });
+    );
 }
 
 var saveWorkoutToFirebase = function(data) {

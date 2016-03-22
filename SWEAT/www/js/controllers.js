@@ -144,6 +144,7 @@ angular.module('starter.controllers', [])
             endDateTime: $scope.data.endDateTime.toJSON(),
             ownerUid: Auth.$getAuth().uid,
             partnerUid: '',
+            matchedWith: '',
             matched: false,
             confirmed: false
         };
