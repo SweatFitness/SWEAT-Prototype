@@ -96,13 +96,12 @@ app.post('/', function(req, res) {
                             console.log('IS A MATCH!!!!');
                             currentReq['matched'] = true;
                             snapshot[id]['matched'] = true;
-                            currentReq['partnerName'] = snapshot[id]['ownerName'];
-                            snapshot[id]['partnerName'] = currentReq['ownerName'];
                             currentReq['matchedWith'] = id;
                             currentReq['partnerUid'] = snapshot[id]['ownerUid'];
                             snapshot[id]['partnerUid'] = currentReq['ownerUid'];
                             idToUpdate = id;
                             dataToUpdate = snapshot[id];
+                            break;
                         }
                     }
                 }
