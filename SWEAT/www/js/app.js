@@ -61,7 +61,8 @@ angular.module('starter', ['ionic', 'firebase', 'ionic-timepicker', 'starter.con
         url: '/today',
         views: {
             'today-tab': {
-                templateUrl: 'templates/today.html'
+                templateUrl: 'templates/today.html',
+                controller: 'TodayCtrl'
             }
         }
     });
