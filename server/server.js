@@ -11,7 +11,7 @@ app.use(bodyparser.json());
 app.listen(process.env.PORT || 8080);
 
 
-app.get('/match/:uid', function(req, res) {
+app.get('/match?:uid', function(req, res) {
     var uid = req.params.id;
     workoutsRef.once("value", function(data) {
         var snapshot = data.val();
@@ -40,9 +40,9 @@ app.get('/match/:uid', function(req, res) {
     });
 });
 
-app.get('/', function(req, res)) {
+app.get('/', function(req, res) {
 
-}
+});
 
 app.post('/', function(req, res) {
     console.log('received post');

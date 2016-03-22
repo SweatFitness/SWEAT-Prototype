@@ -57,7 +57,8 @@ angular.module('starter.controllers', [])
         $http({
             method: 'GET',
             url: 'http://127.0.0.1:8080/match',
-            params: {'uid': Auth.$getAuth().uid}
+            params: {'uid': Auth.$getAuth().uid},
+            headers: {'Access-Control-Allow-Origin': 'http://localhost:8100'}
         }).then(function(response) {
             //TODO: success
         }, function(error) {
