@@ -143,6 +143,7 @@ angular.module('starter.controllers', [])
             startDateTime: $scope.data.startDateTime.toJSON(),
             endDateTime: $scope.data.endDateTime.toJSON(),
             ownerUid: Auth.$getAuth().uid,
+            partnerUid: null,
             matched: false,
             confirmed: false
         };
