@@ -11,7 +11,7 @@ angular.module('starter.controllers', [])
 }])
 
 
-.controller('LoginCtrl', function($scope, $state, Auth) {
+.controller('LoginCtrl', ['$scope', '$state', 'Auth', function($scope, $state, Auth) {
     $scope.data = {};
 
     $scope.loginEmail = function(){
@@ -42,20 +42,32 @@ angular.module('starter.controllers', [])
     $scope.cancelSignup = function() {
         $ionicHistory.goBack();
     }
-})
+}])
 
-.controller('MatchCtrl', function($scope, $state, $ionicListDelegate, Workouts) {
+.controller('MatchCtrl', ['$http', '$scope','$state', '$ionicListDelegate', 'Workouts', 'Auth', function($http, $scope, $state, $ionicListDelegate, Workouts, Auth) {
     $scope.Workouts = Workouts;
 
-    $scope.confirmedWorkouts = [0,1,2];
-    $scope.receivedWorkouts = [0,1,2];
-    $scope.sentWorkouts = [0,1,2];
-    //TODO: load actual data from server
+    $scope.confirmedWorkouts = [];
+    $scope.receivedWorkouts = [];
+    $scope.sentWorkouts = [];
+
     $scope.doRefresh = function() {
         //TODO: send request to server, get result, reload workouts, stop spinning
         // just stop the ion-refresher from spinning for now
-        $scope.$broadcast('scroll.refreshComplete');
+        $http({
+            method: 'GET',
+            url: 'http://127.0.0.1:8080/match',
+            params: {'uid': Auth.$getAuth().uid}
+        }).then(function(response) {
+            //TODO: success
+        }, function(error) {
+            //TODO: error
+        }).finally(function() {
+            $scope.$broadcast('scroll.refreshComplete');
+        });
     }
+    $scope.doRefresh();
+
     $scope.listCanSwipe = function() {
         $ionicListDelegate.canSwipeItems(true);
     }
@@ -74,7 +86,7 @@ angular.module('starter.controllers', [])
         //TODO: write this function
         console.log('delete');
     }
-})
+}])
 
 .controller('ScheduleCtrl', ['$http', '$scope', '$state', '$ionicPopup', 'Auth', 'Workouts', function($http, $scope, $state, $ionicPopup, Auth, Workouts) {
     // local variables, functions
