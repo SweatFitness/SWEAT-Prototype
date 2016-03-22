@@ -6,17 +6,27 @@
                 Confirmed
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in confirmedWorkouts">
-                <img></img>
-                <h2>Partner Name</h2>
+                <img src="./img/dummy-profile.jpg"></img>
+                <h2>Your Name</h2>
                 <p>Workout Detail</p>
+                <div class="partner-avatar-confirmed">
+                    <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
+                    <h2>Partner Name</h2>
+                    <p>Parter Workout Detail</p>
+                </div>
             </ion-item>
             <div class="item item-divider">
                 Received
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in receivedWorkouts">
-                <img></img>
-                <h2>Partner Name</h2>
+                <img src="./img/dummy-profile.jpg"></img>
+                <h2>Your Name</h2>
                 <p>Workout Detail</p>
+                <div class="partner-avatar">
+                    <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
+                    <h2>Partner Name</h2>
+                    <p>Parter Workout Detail</p>
+                </div>
                 <ion-option-button class="button-positive ion-checkmark" 
                                     ng-click="confirmWorkout(item)">
                 </ion-option-button>
@@ -27,8 +37,10 @@
             <div class="item item-divider">
                 Sent
             </div>
-            <ion-item class="item-text-wrap" ng-repeat="workout in sentWorkouts">
-                <h2>Workout Detail</h2>
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in sentWorkouts">
+                <img src="./img/dummy-profile.jpg"></img>
+                <h2>Your Name</h2>
+                <p>Workout Detail</p>
                 <ion-option-button class="button-assertive ion-close" 
                                     ng-click="deleteWorkout(item)">
                 </ion-option-button>
