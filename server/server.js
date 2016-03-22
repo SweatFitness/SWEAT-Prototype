@@ -8,12 +8,14 @@ var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
 
 
+
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
+
 
 app.use(bodyparser.json());
 
@@ -28,7 +30,8 @@ app.get('/today/', function(req, res) {
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
                 if (snapshot[id]['ownerUid'] === uid) {
-                    if (dates.areSameDate(snapshot[id]['startDateTime'], new Date())) {
+                    var startDT = new Date(snapshot[id]['startDateTime']);
+                    if (dates.areSameDate(startDT, new Date())) {
                         today.push(snapshot[id]);
                     }
                 }
