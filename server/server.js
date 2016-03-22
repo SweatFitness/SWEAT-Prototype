@@ -1,12 +1,14 @@
 //Lets require/import the HTTP module
-var http = require('http');
+var express = require('express');
+var app = express();
+var bodyparser = require('body-parser');
+app.use(bodyparser.json());
 
-//Lets define a port we want to listen to
-const PORT=8080; 
+app.listen(process.env.PORT || 8080);
 
-//We need a function which handles requests and send response
-function handleRequest(request, response){
-    if (req.method == 'POST') {
+
+app.get('/', function(req, res) {
+    console.log('some req happened');
         var jsonStr = '';
 
         req.on('data', function(data) {
@@ -16,14 +18,19 @@ function handleRequest(request, response){
         req.on('end', function() {
             console.log(JSON.parse(jsonStr));
         });
-    }
-}
 
-//Create a server
-var server = http.createServer(handleRequest);
+        res.send('hello');
+});
 
-//Lets start our server
-server.listen(PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
-    console.log("Server listening on: http://localhost:%s", PORT);
+app.post('/', function(req, res) {
+    console.log('received post');
+    var jsonStr = '';
+
+        req.on('data', function(data) {
+            jsonStr += data;
+        });
+
+        req.on('end', function() {
+            console.log(JSON.parse(jsonStr));
+        });
 });

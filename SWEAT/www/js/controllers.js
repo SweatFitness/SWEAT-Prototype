@@ -76,7 +76,7 @@ angular.module('starter.controllers', [])
     }
 })
 
-.controller('ScheduleCtrl', function($scope, $state, $ionicPopup, Auth, Workouts) {
+.controller('ScheduleCtrl', ['$http', '$scope', '$state', '$ionicPopup', 'Auth', 'Workouts', function($http, $scope, $state, $ionicPopup, Auth, Workouts) {
     // local variables, functions
     var __makeDateTime = function(date, time) {
         // time in the day in seconds
@@ -136,7 +136,7 @@ angular.module('starter.controllers', [])
     $scope.data.endDateTime = __makeDateTime(__now, $scope.data.endTime);
 
     $scope.createWorkout = function() {
-        Workouts.$add({
+        var req = {
             workout_type: $scope.data.workout_type,
             location: $scope.data.location,
             lookingfor: $scope.data.lookingfor,
@@ -145,7 +145,17 @@ angular.module('starter.controllers', [])
             onwerUid: Auth.$getAuth().uid,
             matched: false,
             confirmed: false
-        });
+        };
+        console.log('Creating workout: ' +  JSON.stringify(req));
+        $http({
+                  method  : 'POST',
+                  url     : 'http://127.0.0.1:8080',
+                  data    : req,
+                  headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
+                 });
+
+
+        //Workouts.$add(req);
     };
 
     $scope.setDay = function(day) {
@@ -156,4 +166,4 @@ angular.module('starter.controllers', [])
         $scope.data.startDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.startTime);
         $scope.data.endDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.endTime);
     }
-})
+}]);
