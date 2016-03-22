@@ -120,8 +120,10 @@ angular.module('starter.controllers', [])
         $scope.doRefresh();
     }
 
-    $scope.deleteWorkout = function(item) {
+    $scope.deleteWorkout = function(workout) {
         console.log('delete');
+        Workouts.$remove(Workouts.$getRecord(workout.myID));
+        $scope.doRefresh();
     }
 }])
 
