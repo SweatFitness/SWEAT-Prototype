@@ -1,9 +1,14 @@
 angular.module('starter.controllers', [])
 
-.factory('Auth', function ($firebaseAuth) {
+.factory('Auth', ['$firebaseAuth', function ($firebaseAuth) {
     var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
     return $firebaseAuth(usersRef);
-})
+}])
+
+.factory('UsersList', ['$firebaseArray', function($firebaseArray) {
+    var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
+    return $firebaseArray(usersRef);
+}])
 
 .factory('Workouts', ['$firebaseArray', function($firebaseArray) {
     var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
@@ -13,6 +18,7 @@ angular.module('starter.controllers', [])
 
 .controller('LoginCtrl', ['$scope', '$state', 'Auth', function($scope, $state, Auth) {
     $scope.data = {};
+    $scope.usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
     $scope.loginEmail = function(){
         Auth.$authWithPassword({
@@ -29,11 +35,14 @@ angular.module('starter.controllers', [])
     $scope.signupEmail = function() {
         Auth.$createUser({
             email: $scope.data.email,
-            password: $scope.data.password,
-            firstname: $scope.data.firstname,
-            lastname: $scope.data.lastname
+            password: $scope.data.password
         }).then(function(userData) {
             console.log('Successfully created user with uid: ', userData);
+            $scope.usersRef.child(userData.uid).set({
+                provider: 'password',
+                firstname: $scope.data.firstname,
+                lastname: $scope.data.lastname
+            });
             $scope.loginEmail();
         }).catch(function(error) {
             console.log('User creation failed with error: ', error);
@@ -44,23 +53,30 @@ angular.module('starter.controllers', [])
     }
 }])
 
-.controller('MatchCtrl', ['$http', '$scope','$state', '$ionicListDelegate', 'Workouts', 'Auth', function($http, $scope, $state, $ionicListDelegate, Workouts, Auth) {
+.controller('MatchCtrl', ['$http', '$scope','$state', '$ionicListDelegate', 'Workouts', 'Auth', 'UsersList', function($http, $scope, $state, $ionicListDelegate, Workouts, Auth, UsersList) {
     $scope.Workouts = Workouts;
+    $scope.Auth = Auth;
+    $scope.UsersList = UsersList;
 
     $scope.confirmedWorkouts = [];
-    $scope.receivedWorkouts = [];
-    $scope.sentWorkouts = [];
+    $scope.pendingWorkouts = [];
+    $scope.requestedWorkouts = [];
+
+    $scope.getUserName = function(uid) {
+    }
 
     $scope.doRefresh = function() {
-        //TODO: send request to server, get result, reload workouts, stop spinning
-        // just stop the ion-refresher from spinning for now
         $http({
             method: 'GET',
-            url: 'http://127.0.0.1:8080/match',
-            params: {'uid': Auth.$getAuth().uid},
-            headers: {'Access-Control-Allow-Origin': 'http://localhost:8100'}
+            url: 'http://127.0.0.1:8080/match/',
+            params: {'uid': Auth.$getAuth().uid}
         }).then(function(response) {
-            //TODO: success
+            var workouts = response.data
+            console.log(workouts);
+            console.log($scope.UsersList);
+            $scope.confirmedWorkouts = workouts.confirmed;
+            $scope.pendingWorkouts = workouts.pending;
+            $scope.requestedWorkouts = workouts.requested;
         }, function(error) {
             //TODO: error
         }).finally(function() {

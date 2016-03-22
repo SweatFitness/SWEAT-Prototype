@@ -7,7 +7,7 @@
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in confirmedWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2>Your Name</h2>
+                <h2></h2>
                 <p>Workout Detail</p>
                 <div class="partner-avatar-confirmed">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
@@ -16,11 +16,11 @@
                 </div>
             </ion-item>
             <div class="item item-divider">
-                Received
+                Pending
             </div>
-            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in receivedWorkouts">
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in pendingWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2>Your Name</h2>
+                <h2>{{getUserName(Auth.$getAuth().uid)}}</h2>
                 <p>Workout Detail</p>
                 <div class="partner-avatar">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
@@ -35,9 +35,9 @@
                 </ion-option-button>
             </ion-item>
             <div class="item item-divider">
-                Sent
+                Requested
             </div>
-            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in sentWorkouts">
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in requestedWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
                 <h2>Your Name</h2>
                 <p>Workout Detail</p>
