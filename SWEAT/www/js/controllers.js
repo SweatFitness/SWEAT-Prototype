@@ -98,11 +98,26 @@ angular.module('starter.controllers', [])
     }
 
     $scope.confirmWorkout = function(workout) {
-        console.log(workout.myId);
+        console.log(workout.myID);
+        var workoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);
+        workoutRef.child('confirmed').set(true);
+        $ionicListDelegate.closeOptionButtons();
+        $scope.doRefresh();
     }
 
     $scope.declineWorkout = function(workout) {
         console.log('decline');
+        var myWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);
+        var partnerWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.matchedWith);
+        myWorkoutRef.child('confirmed').set(false);
+        myWorkoutRef.child('matchedWith').set('');
+        myWorkoutRef.child('matched').set(false);
+        myWorkoutRef.child('partnerUid').set('');
+        partnerWorkoutRef.child('confirmed').set(false);
+        partnerWorkoutRef.child('matchedWith').set('');
+        partnerWorkoutRef.child('matched').set(false);
+        partnerWorkoutRef.child('partnerUid').set('');
+        $scope.doRefresh();
     }
 
     $scope.deleteWorkout = function(item) {

@@ -13,7 +13,7 @@
                 <p>Type: {{workout.workout_type}}</p>
                 <div class="partner-avatar-confirmed">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
-                    <h2>{getUserName(workout.partnerUid)}}</h2>
+                    <h2>{{getUserName(workout.partnerUid)}}</h2>
                     <p>At {{getWorkout(workout.matchedWith).location}} on {{getDateFrom(getWorkout(workout.matchedWith).startDateTime)}}</p>
                     <p>From {{getTimeFrom(getWorkout(workout.matchedWith).startDateTime)}} to {{getTimeFrom(getWorkout(workout.matchedWith).endDateTime)}}</p>
                     <p>Type: {{getWorkout(workout.matchedWith).workout_type}}</p>
