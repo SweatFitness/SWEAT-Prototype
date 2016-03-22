@@ -6,13 +6,45 @@ var express = require('express'),
 var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
 var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
+
+
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
+
 app.use(bodyparser.json());
 
 app.listen(process.env.PORT || 8080);
 
+app.get('/today/', function(req, res) {
+    var uid = req.param('uid');
+    console.log('got GET on match with uid: ' + uid);
+    workoutsRef.once("value", function(data) {
+        var snapshot = data.val();
+        var today = [];
+        for (var id in snapshot) {
+            if (snapshot.hasOwnProperty(id)) {
+                if (snapshot[id]['ownerUid'] === uid) {
+                    if (dates.areSameDate(snapshot[id]['startDateTime'], new Date())) {
+                        today.push(snapshot[id]);
+                    }
+                }
+            }
+        }
 
-app.get('/match/:uid', function(req, res) {
-    var uid = req.params.id;
+        res.send({
+            today
+        });
+    });
+});
+
+
+app.get('/match/', function(req, res) {
+    var uid = req.param('uid');
+    console.log('got GET on match with uid: ' + uid);
     workoutsRef.once("value", function(data) {
         var snapshot = data.val();
         var confirmed = [];
@@ -39,10 +71,6 @@ app.get('/match/:uid', function(req, res) {
         });
     });
 });
-
-app.get('/', function(req, res)) {
-
-}
 
 app.post('/', function(req, res) {
     console.log('received post');
@@ -138,6 +166,12 @@ var isMatch = function(data, req) {
 http://stackoverflow.com/questions/492994/compare-two-dates-with-javascript
 */
 var dates = {
+    areSameDate: function(d1, d2) {
+        return d1.getFullYear() == d2.getFullYear()
+            && d1.getMonth() == d2.getMonth() 
+            && d1.getDate() == d2.getDate();
+    },
+
     convert:function(d) {
         // Converts the date in d to a date-object. The input can be:
         //   a date object: returned without modification
