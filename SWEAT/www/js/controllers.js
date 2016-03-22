@@ -142,7 +142,7 @@ angular.module('starter.controllers', [])
             lookingfor: $scope.data.lookingfor,
             startDateTime: $scope.data.startDateTime.toJSON(),
             endDateTime: $scope.data.endDateTime.toJSON(),
-            onwerUid: Auth.$getAuth().uid,
+            ownerUid: Auth.$getAuth().uid,
             matched: false,
             confirmed: false
         };
