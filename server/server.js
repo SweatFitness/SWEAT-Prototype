@@ -29,11 +29,9 @@ app.get('/today/', function(req, res) {
         var today = [];
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
-                if (snapshot[id]['ownerUid'] === uid) {
-                    var startDT = new Date(snapshot[id]['startDateTime']);
-                    if (dates.areSameDate(startDT, new Date())) {
-                        today.push(snapshot[id]);
-                    }
+                var startDT = new Date(snapshot[id]['startDateTime']);
+                if (dates.areSameDate(startDT, new Date())) {
+                    today.push(snapshot[id]);
                 }
             }
         }
