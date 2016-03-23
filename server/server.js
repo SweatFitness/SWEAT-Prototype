@@ -148,8 +148,6 @@ var isMatch = function(data, req) {
         shouldMatch = false; // already confirmed. skip!
     } else if (data['ownerUid'] === req['ownerUid']) {
         shouldMatch = false;; // dont wanna match myself. skip!
-    } else if (data['location'] !== req['location']) {
-        shouldMatch = false;
     } else if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] !== 'Workout Buddy') {
         shouldMatch = false;
     } else if (data['lookingfor'] !== 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
