@@ -141,9 +141,9 @@ var saveWorkoutToFirebase = function(data) {
 
 var isMatch = function(data, req) {
     console.log('Checking match...');
-    var ShouldMatch = true;
+    var shouldMatch = true;
     if (data['matched']) {  // already matched. skip!
-        ShouldMatch = false;
+        shouldMatch = false;
     } else if (data['confirmed']) {
         shouldMatch = false; // already confirmed. skip!
     } else if (data['ownerUid'] === req['ownerUid']) {
@@ -155,6 +155,10 @@ var isMatch = function(data, req) {
     } else if (data['lookingfor'] === 'Expert/Trainer' && req['lookingfor'] !== 'Trainee') {
         shouldMatch = false;
     } else if (data['lookingfor'] !== 'Trainee' && req['lookingfor'] === 'Expert/Trainer') {
+        shouldMatch = false;
+    } else if (data['lookingfor'] === 'Trainee' && req['lookingfor'] !== 'Expert/Trainer') {
+        shouldMatch = false;
+    } else if (data['lookingfor'] !== 'Expert/Trainer' && req['lookingfor'] === 'Trainee') {
         shouldMatch = false;
     }
 
