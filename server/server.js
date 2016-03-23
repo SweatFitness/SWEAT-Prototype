@@ -23,13 +23,19 @@ app.listen(process.env.PORT || 8080);
 
 app.get('/today/', function(req, res) {
     var uid = req.param('uid');
-    console.log('got GET on match with uid: ' + uid);
+    console.log('got GET on today with uid: ' + uid);
     workoutsRef.once("value", function(data) {
         var snapshot = data.val();
         var today = [];
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
                 var startDT = new Date(snapshot[id]['startDateTime']);
+                if (snapshot[id]['ownerUid'] === uid) {
+                    continue; // Don't want to see my own ones
+                } else if (snapshot[id]['matched']) {
+                    continue; // skip matched ones 
+                }
+
                 if (dates.areSameDate(startDT, new Date())) {
                     today.push(snapshot[id]);
                 }
