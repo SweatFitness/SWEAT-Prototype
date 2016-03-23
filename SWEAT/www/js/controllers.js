@@ -57,7 +57,7 @@ angular.module('starter.controllers', [])
     $scope.doRefresh = function() {
         $http({
             method: 'GET',
-            url: 'http://127.0.0.1:8080/today/',
+            url: 'http://warm-river-17284.herokuapp.com/today/',
             params: {'uid': Auth.$getAuth().uid}
         }).then(function(response) {
             var workouts = response.data
@@ -112,7 +112,7 @@ angular.module('starter.controllers', [])
         console.log('Refereshing!');
         $http({
             method: 'GET',
-            url: 'http://127.0.0.1:8080/match/',
+            url: 'http://warm-river-17284.herokuapp.com/match/',
             params: {'uid': Auth.$getAuth().uid}
         }).then(function(response) {
             var workouts = response.data
@@ -223,7 +223,7 @@ angular.module('starter.controllers', [])
         console.log('Creating workout: ' +  JSON.stringify(req));
         $http({
                   method  : 'POST',
-                  url     : 'http://127.0.0.1:8080',
+                  url     : 'http://warm-river-17284.herokuapp.com/',
                   data    : req,
                   headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
                  });
