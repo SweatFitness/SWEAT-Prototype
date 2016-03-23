@@ -28,6 +28,7 @@
                 <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
                 <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
                 <p>Type: {{workout.workout_type}}</p>
+                <i class="ion-arrow-left-c swipe-icon"></i>
                 <div class="partner-avatar">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
                     <h2>{{getUserName(workout.partnerUid)}}</h2>
@@ -51,6 +52,7 @@
                 <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
                 <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
                 <p>Type: {{workout.workout_type}}</p>
+                <i class="ion-arrow-left-c swipe-icon"></i>
                 <ion-option-button class="button-assertive ion-close" 
                                     ng-click="deleteWorkout(workout)">
                 </ion-option-button>

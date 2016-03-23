@@ -17,3 +17,8 @@
     text-align:right;
     padding-right:56px;
 }
+.swipe-icon {
+    position: absolute;
+    top: 50px;
+    right: 16px;
+}
