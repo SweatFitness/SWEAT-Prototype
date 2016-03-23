@@ -1,3 +1,7 @@
+// For deployment: var apiEndpoint = 'http://warm-river-17284.herokuapp.com/';
+var apiEndpoint = 'http://127.0.0.1:8080';
+//var apiEndpoint = 'http://warm-river-17284.herokuapp.com';
+
 angular.module('starter.controllers', [])
 
 .factory('Auth', ['$firebaseAuth', function ($firebaseAuth) {
@@ -57,7 +61,7 @@ angular.module('starter.controllers', [])
     $scope.doRefresh = function() {
         $http({
             method: 'GET',
-            url: 'http://warm-river-17284.herokuapp.com/today/',
+            url: apiEndpoint + '/today/',
             params: {'uid': Auth.$getAuth().uid}
         }).then(function(response) {
             var workouts = response.data
@@ -112,7 +116,7 @@ angular.module('starter.controllers', [])
         console.log('Refereshing!');
         $http({
             method: 'GET',
-            url: 'http://warm-river-17284.herokuapp.com/match/',
+            url: apiEndpoint + '/match/',
             params: {'uid': Auth.$getAuth().uid}
         }).then(function(response) {
             var workouts = response.data
@@ -223,7 +227,7 @@ angular.module('starter.controllers', [])
         console.log('Creating workout: ' +  JSON.stringify(req));
         $http({
                   method  : 'POST',
-                  url     : 'http://warm-river-17284.herokuapp.com/',
+                  url     : apiEndpoint,
                   data    : req,
                   headers : {'Content-Type': 'application/x-www-form-urlencoded'} 
                  });
