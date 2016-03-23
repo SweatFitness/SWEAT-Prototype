@@ -37,7 +37,7 @@ app.get('/today/', function(req, res) {
         }
 
         res.send({
-            today
+            'today': today
         });
     });
 });
@@ -135,23 +135,31 @@ var saveWorkoutToFirebase = function(data) {
 
 var isMatch = function(data, req) {
     console.log('Checking match...');
+    var ShouldMatch = true;
     if (data['matched']) {  // already matched. skip!
+        ShouldMatch = false;
+    } else if (data['confirmed']) {
+        shouldMatch = false; // already confirmed. skip!
+    } else if (data['ownerUid'] === req['ownerUid']) {
+        shouldMatch = false;; // dont wanna match myself. skip!
+    } else if (data['location'] !== req['location']) {
+        shouldMatch = false;
+    } else if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] !== 'Workout Buddy') {
+        shouldMatch = false;
+    } else if (data['lookingfor'] !== 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
+        shouldMatch = false;
+    } else if (data['lookingfor'] === 'Expert/Trainer' && req['lookingfor'] !== 'Trainee') {
+        shouldMatch = false;
+    } else if (data['lookingfor'] !== 'Trainee' && req['lookingfor'] === 'Expert/Trainer') {
+        shouldMatch = false;
+    }
+
+    if (shouldMatch === false) {
         return false;
     }
-    if (data['confirmed']) {
-        return false; // already confirmed. skip!
-    }
-    if (data['ownerUid'] === req['ownerUid']) {
-        return false; // dont wanna match myself. skip!
-    }
-    if (data['lookingfor'] !== 'Workout Buddy' || req['lookingfor'] !== 'Workout Buddy') {
-        return false; // need to be looking for buddy, not trainer. Skip!
-    }
-    if (data['location'] !== req['location']) {
-        return false; // need to be at the same place. skip!
-    }
-    var firstGuyStartTime = new Date(data['startDateTime']),
-        firstGuyEndTime = new Date(data['endDateTime']),
+
+    var firstGuyStartTime = new Date(req['startDateTime']),
+        firstGuyEndTime = new Date(req['endDateTime']),
         secondGuyStartTime = new Date(data['startDateTime']),
         secondGuyEndTime = new Date(data['endDateTime']);
 
