@@ -1,13 +1,13 @@
 <ion-view view-title="My Schedule">
 <ion-content class="padding">
 <div class="button-bar">
-    <a class="button" ng-click="setDay(0)" ng-class="{'active': data.selectedDay == 0}">S</a>
-    <a class="button" ng-click="setDay(1)" ng-class="{'active': data.selectedDay == 1}">M</a>
-    <a class="button" ng-click="setDay(2)" ng-class="{'active': data.selectedDay == 2}">Tu</a>
-    <a class="button" ng-click="setDay(3)" ng-class="{'active': data.selectedDay == 3}">W</a>
-    <a class="button" ng-click="setDay(4)" ng-class="{'active': data.selectedDay == 4}">Th</a>
-    <a class="button" ng-click="setDay(5)" ng-class="{'active': data.selectedDay == 5}">F</a>
-    <a class="button" ng-click="setDay(6)" ng-class="{'active': data.selectedDay == 6}">S</a>
+    <a class="button" ng-click="setDay(0, $event)" ng-class="{'active': data.selectedDay == 0, 'button-positive': data.today == 0}">S</a>
+    <a class="button" ng-click="setDay(1, $event)" ng-class="{'active': data.selectedDay == 1, 'button-positive': data.today == 1}">M</a>
+    <a class="button" ng-click="setDay(2, $event)" ng-class="{'active': data.selectedDay == 2, 'button-positive': data.today == 2}">Tu</a>
+    <a class="button" ng-click="setDay(3, $event)" ng-class="{'active': data.selectedDay == 3, 'button-positive': data.today == 3}">W</a>
+    <a class="button" ng-click="setDay(4, $event)" ng-class="{'active': data.selectedDay == 4, 'button-positive': data.today == 4}">Th</a>
+    <a class="button" ng-click="setDay(5, $event)" ng-class="{'active': data.selectedDay == 5, 'button-positive': data.today == 5}">F</a>
+    <a class="button" ng-click="setDay(6, $event)" ng-class="{'active': data.selectedDay == 6, 'button-positive': data.today == 6}">S</a>
 </div>
 
 <!-- TODO: Replace this with a time picker --> 
@@ -64,3 +64,10 @@
 </ion-content>
 </ion-view>
 
+<script id="date-popover.html" type="text/ng-template">
+    <ion-popover-view>
+        <ion-content>
+            {{dateStringNoYear(data.selectedDate)}}
+        </ion-content>
+    </ion-popover-view>
+</script>

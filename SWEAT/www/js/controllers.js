@@ -151,7 +151,7 @@ angular.module('starter.controllers', [])
     }
 }])
 
-.controller('ScheduleCtrl', ['$http', '$scope', '$state', '$ionicPopup', 'Auth', 'Workouts', function($http, $scope, $state, $ionicPopup, Auth, Workouts) {
+.controller('ScheduleCtrl', ['$http', '$scope', '$state', '$ionicPopup', '$ionicPopover', 'Auth', 'Workouts', function($http, $scope, $state, $ionicPopup, $ionicPopover, Auth, Workouts) {
     // local variables, functions
     var __makeDateTime = function(date, time) {
         // time in the day in seconds
@@ -170,6 +170,7 @@ angular.module('starter.controllers', [])
     $scope.data = {};
     $scope.data.selectedDate = __now;
     $scope.data.selectedDay = __now.getDay();
+    $scope.data.today = __now.getDay(); // constant, DO NOT CHANGE
     $scope.data.startTimepickerObj = {
         inputEpochTime: (__now.getHours() + 1) * 60 * 60,  //Optional
         step: 15,  //Optional
@@ -236,12 +237,39 @@ angular.module('starter.controllers', [])
         //Workouts.$add(req);
     };
 
-    $scope.setDay = function(day) {
+    $scope.dateStringNoYear = function(date) {
+        var components = date.toLocaleDateString().split('/');
+        return components[0]+'/'+components[1];
+    }
+
+    $ionicPopover.fromTemplateUrl('date-popover.html', {
+        scope: $scope
+    }).then(function(popover) {
+        $scope.popover = popover
+    });
+
+    $scope.showPopover = function($event) {
+        $scope.popover.show($event);
+    }
+
+    $scope.hidePopover = function() {
+        $scope.popover.hide();
+    }
+
+    $scope.$on('$destroy', function() {
+        $scope.popover.remove();
+    });
+
+    $scope.setDay = function(day, $event) {
         $scope.data.selectedDay = day;
         var dateDiff = day - __now.getDay();
         dateDiff = (dateDiff < 0) ? dateDiff + 7 : dateDiff;
         $scope.data.selectedDate = new Date(__now.getTime() + dateDiff*24*60*60*1000);
         $scope.data.startDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.startTime);
         $scope.data.endDateTime = __makeDateTime($scope.data.selectedDate, $scope.data.endTime);
+        $scope.showPopover($event);
+        setTimeout(function() {
+            $scope.hidePopover();
+        },1000);
     }
 }]);
