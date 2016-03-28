@@ -2,13 +2,16 @@
 <ion-content class="padding">
 <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
 
-<ion-list type="card">
+<ion-list type="card" can-swipe="listCanSwipe()" ng-show="UsersList !== []">
     <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in todaysWorkouts">
         <img src="./img/dummy-profile.jpg"></img>
         <h2>{{getUserName(workout.ownerUid)}}</h2>
         <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
         <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
         <p>Type: {{workout.workout_type}}</p>
+    <ion-option-button class="button-positive ion-checkmark" 
+                        ng-click="confirmWorkout(workout)">
+    </ion-option-button>
     </ion-item>
     </ion-list>
 </div>

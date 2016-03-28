@@ -57,7 +57,7 @@ angular.module('starter.controllers', [])
     }
 }])
 
-.controller('TodayCtrl', ['$http', '$scope', '$state', 'Auth', 'Workouts', 'UsersList', function($http, $scope, $state, Auth, Workouts, UsersList) {
+.controller('TodayCtrl', ['$http', '$scope', '$state', '$ionicListDelegate', 'Auth', 'Workouts', 'UsersList', function($http, $scope, $state, $ionicListDelegate, Auth, Workouts, UsersList) {
     $scope.doRefresh = function() {
         $http({
             method: 'GET',
@@ -88,6 +88,20 @@ angular.module('starter.controllers', [])
     }
     $scope.getWorkout = function(id) {
         return Workouts.$getRecord(id);
+    }
+    $scope.listCanSwipe = function() {
+        $ionicListDelegate.canSwipeItems(true);
+    }
+    $scope.confirmWorkout = function(workout) {
+        console.log(workout.myID);
+        var workoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);     
+        var partnerWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.matchedWith);
+        partnerWorkoutRef.child('confirmed').set(true);
+        workoutRef.child('confirmed').set(true);
+        partnerWorkoutRef.child('matchedWith').set(workout.myID);
+        workoutRef.child('matchedWith').set(partnerWorkoutRef.child('myID'));
+        $ionicListDelegate.closeOptionButtons();      
+        scope.doRefresh();
     }
 }])
 
@@ -137,11 +151,27 @@ angular.module('starter.controllers', [])
     }
 
     $scope.confirmWorkout = function(workout) {
-        console.log(workout.myId);
+        console.log(workout.myID);
+        var workoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);     
+        var partnerWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.matchedWith);
+        partnerWorkoutRef.child('confirmed').set(true);
+        workoutRef.child('confirmed').set(true);      
+        $ionicListDelegate.closeOptionButtons();      
+        scope.doRefresh();
     }
 
     $scope.declineWorkout = function(workout) {
-        console.log('decline');
+        var myWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);       
+        var partnerWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.matchedWith);     
+        myWorkoutRef.child('confirmed').set(false);       
+        myWorkoutRef.child('matchedWith').set('');        
+        myWorkoutRef.child('matched').set(false);     
+        myWorkoutRef.child('partnerUid').set('');     
+        partnerWorkoutRef.child('confirmed').set(false);      
+        partnerWorkoutRef.child('matchedWith').set('');       
+        partnerWorkoutRef.child('matched').set(false);        
+        partnerWorkoutRef.child('partnerUid').set('');        
+        $scope.doRefresh();
     }
 
     $scope.deleteWorkout = function(workout) {

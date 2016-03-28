@@ -48,6 +48,13 @@ app.get('/today/', function(req, res) {
     });
 });
 
+app.get('/confirm/', function(req, res) {
+
+});
+
+app.get('/forceConfirm/', function(req, res) {
+
+});
 
 app.get('/match/', function(req, res) {
     var uid = req.param('uid');
