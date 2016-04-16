@@ -55,6 +55,18 @@
             <option>Trainee</option>
         </select>
     </label>
+    <label class="item item-input item-select">
+        <div class="input-label">
+            How many People?
+        </div>
+        <select name="maxpeople" ng-model="data.maxPeople">
+            <option selected>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>More than 5</option>
+        </select>
+    </label>
 
     <button class="button button-full button-stable submit-btn" ng-click="createWorkout()">
         Create Workout

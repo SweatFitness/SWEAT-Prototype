@@ -3,7 +3,7 @@ var express = require('express'),
     bodyparser = require('body-parser'),
     firebase = require('firebase');
 
-var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
+var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkouts');
 var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
 
@@ -52,9 +52,20 @@ app.get('/confirm/', function(req, res) {
 
 });
 
-app.get('/forceConfirm/', function(req, res) {
-
+/*
+app.get('/forceMatch/', function(req, res) {
+    var uid = req.param('uid');
+    console.log('got GET on forceMatch with uid: ' + uid);
+    workoutRef.once("value", function(data) {
+        var snapshot = data.val();
+        for (var id in snapshot) {
+            if (snapshot.hasOwnProperty(id)) {
+                if (snapshot[id][''])
+            }
+        }
+    })
 });
+*/
 
 app.get('/match/', function(req, res) {
     var uid = req.param('uid');
@@ -77,7 +88,6 @@ app.get('/match/', function(req, res) {
                 }
             }
         }
-
         res.send({
             'confirmed': confirmed,
             'pending': pending,
@@ -149,7 +159,7 @@ var saveWorkoutToFirebase = function(data) {
 var isMatch = function(data, req) {
     console.log('Checking match...');
     var shouldMatch = true;
-    if (data['matched']) {  // already matched. skip!
+    if (data['isFull']) {  // already matched. skip!
         shouldMatch = false;
     } else if (data['confirmed']) {
         shouldMatch = false; // already confirmed. skip!

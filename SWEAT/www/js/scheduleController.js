@@ -70,9 +70,8 @@ angular.module('starter.controllers')
             startDateTime: $scope.data.startDateTime.toJSON(),
             endDateTime: $scope.data.endDateTime.toJSON(),
             ownerUid: Auth.$getAuth().uid,
-            partnerUid: '',
-            matchedWith: '',
-            matched: false,
+            maxPeople: $scope.data.maxPeople,
+            members: [Auth.$getAuth().uid],
             confirmed: false,
             myID: ''
         };

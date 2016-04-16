@@ -14,6 +14,6 @@ angular.module('starter.controllers', [])
 }])
 
 .factory('Workouts', ['$firebaseArray', function($firebaseArray) {
-    var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
+    var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkouts');
     return $firebaseArray(workoutsRef);
 }])
