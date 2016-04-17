@@ -63,8 +63,21 @@ angular.module('starter.controllers')
     $scope.data.endDateTime = __makeDateTime(__now, $scope.data.endTime);
 
     $scope.createWorkout = function() {
+        var matchType, 
+            expert = '';
+        if ($scope.data.lookingfor == "Workout Buddy") {
+            matchType = "buddy";
+        } else {
+            if ($scope.data.lookingfor == 'Trainee') {
+                expert = Auth.$getAuth.uid;
+            }
+            matchType = "expert";
+        }
+
         var req = {
-            workout_type: $scope.data.workout_type,
+            workout_types: $scope.data.workout_types,
+            matchType: matchType,
+            expert: expert,
             location: $scope.data.location,
             lookingfor: $scope.data.lookingfor,
             startDateTime: $scope.data.startDateTime.toJSON(),
@@ -72,7 +85,7 @@ angular.module('starter.controllers')
             ownerUid: Auth.$getAuth().uid,
             maxPeople: $scope.data.maxPeople,
             members: [Auth.$getAuth().uid],
-            confirmed: false,
+            isFull: false,
             myID: ''
         };
         console.log('Creating workout: ' +  JSON.stringify(req));
