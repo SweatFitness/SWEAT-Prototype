@@ -3,11 +3,8 @@ var express = require('express'),
     bodyparser = require('body-parser'),
     firebase = require('firebase');
 
-var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
+var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkout');
 var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
-
-
-
 
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -52,9 +49,20 @@ app.get('/confirm/', function(req, res) {
 
 });
 
-app.get('/forceConfirm/', function(req, res) {
-
+/*
+app.get('/forceMatch/', function(req, res) {
+    var uid = req.param('uid');
+    console.log('got GET on forceMatch with uid: ' + uid);
+    workoutRef.once("value", function(data) {
+        var snapshot = data.val();
+        for (var id in snapshot) {
+            if (snapshot.hasOwnProperty(id)) {
+                if (snapshot[id][''])
+            }
+        }
+    })
 });
+*/
 
 app.get('/match/', function(req, res) {
     var uid = req.param('uid');
@@ -77,7 +85,6 @@ app.get('/match/', function(req, res) {
                 }
             }
         }
-
         res.send({
             'confirmed': confirmed,
             'pending': pending,
@@ -96,32 +103,39 @@ app.post('/', function(req, res) {
 
         req.on('end', function() {
             var currentReq = JSON.parse(jsonStr);
+            console.log(currentReq);
             var idToUpdate;
             var dataToUpdate = {};
 
             workoutsRef.once("value", function(data) {
                 var snapshot = data.val();
+                // No workouts yet
+                if (!snapshot) {
+                    workoutsRef.push(currentReq);
+                    return;
+                }
                 for (var id in snapshot) {
                     if (snapshot.hasOwnProperty(id)) {
-                        if(isMatch(snapshot[id], currentReq)) {
-                            console.log('IS A MATCH!!!!');
-                            currentReq['matched'] = true;
-                            snapshot[id]['matched'] = true;
-                            currentReq['matchedWith'] = id;
-                            currentReq['partnerUid'] = snapshot[id]['ownerUid'];
-                            snapshot[id]['partnerUid'] = currentReq['ownerUid'];
+                        if (isMatch(snapshot[id], currentReq)) {
+                            console.log('is a match!');
+                            snapshot[id]['members'].push(currentReq['ownerUid']);
+                            if (snapshot[id]['members'].length == snapshot[id]['maxPeople']) {
+                                snapshot[id]['isFull'] = true;
+                            }
                             idToUpdate = id;
                             dataToUpdate = snapshot[id];
+                            updateWorkout(id, snapshot[id]);
                             break;
+                        } else {
+                            var newWorkoutRef = workoutsRef.push(currentReq);
+                            console.log(newWorkoutRef);
                         }
                     }
                 }
                 
-                var newWorkoutRef = workoutsRef.push(currentReq);
-
+               /* 
                 currentReq['myID'] = newWorkoutRef.key();
                 updateWorkout(newWorkoutRef.key(), currentReq);
-                
                 if (currentReq['matched']) {
                     console.log('logging current one');
 
@@ -131,9 +145,9 @@ app.post('/', function(req, res) {
                     dataToUpdate['matchedWith'] = newKey;
                     updateWorkout(idToUpdate, dataToUpdate);
                 }
+               */
             });
         });
-
 });
 
 var updateWorkout = function(id, data) {
@@ -149,15 +163,35 @@ var saveWorkoutToFirebase = function(data) {
 var isMatch = function(data, req) {
     console.log('Checking match...');
     var shouldMatch = true;
-    if (data['matched']) {  // already matched. skip!
+    if (data['isFull']) {  // already matched. skip!
         shouldMatch = false;
     } else if (data['confirmed']) {
         shouldMatch = false; // already confirmed. skip!
     } else if (data['ownerUid'] === req['ownerUid']) {
         shouldMatch = false;; // dont wanna match myself. skip!
-    } else if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] !== 'Workout Buddy') {
-        shouldMatch = false;
-    } else if (data['lookingfor'] !== 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
+    }
+    
+
+    /* defer experts on group for now
+    if (data['matchType'] === 'expert') {
+        // expert is not set
+        if (data['expert'] !== '') {
+            // 
+            if (req['lookingfor'] === 'Trainee') {
+                shouldMatch = false;
+            } else {
+                shouldMatch = true;
+            }
+        } else {
+
+        }
+    }
+   */
+
+    // both looking for buddies. match
+    if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
+        shouldMatch = true;
+    } else if (data['matchType'] == 'expert' && req['lookingfor'] == 'Expert') {
         shouldMatch = false;
     } else if (data['lookingfor'] === 'Expert/Trainer' && req['lookingfor'] !== 'Trainee') {
         shouldMatch = false;
