@@ -3,7 +3,7 @@ var express = require('express'),
     bodyparser = require('body-parser'),
     firebase = require('firebase');
 
-var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkouts');
+var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkout');
 var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
 app.all('*', function(req, res, next) {
@@ -103,32 +103,39 @@ app.post('/', function(req, res) {
 
         req.on('end', function() {
             var currentReq = JSON.parse(jsonStr);
+            console.log(currentReq);
             var idToUpdate;
             var dataToUpdate = {};
 
             workoutsRef.once("value", function(data) {
                 var snapshot = data.val();
+                // No workouts yet
+                if (!snapshot) {
+                    workoutsRef.push(currentReq);
+                    return;
+                }
                 for (var id in snapshot) {
                     if (snapshot.hasOwnProperty(id)) {
                         if (isMatch(snapshot[id], currentReq)) {
-                            currentReq['matched'] = true;
-                            snapshot[id]['matched'] = true;
-                            currentReq['matchedWith'] = id;
-                            snapshot[id]['members'].append(currentReq['ownerUid']);
-                            currentReq['partnerUid'] = snapshot[id]['ownerUid'];
-                            snapshot[id]['partnerUid'] = currentReq['ownerUid'];
+                            console.log('is a match!');
+                            snapshot[id]['members'].push(currentReq['ownerUid']);
+                            if (snapshot[id]['members'].length == snapshot[id]['maxPeople']) {
+                                snapshot[id]['isFull'] = true;
+                            }
                             idToUpdate = id;
                             dataToUpdate = snapshot[id];
+                            updateWorkout(id, snapshot[id]);
                             break;
+                        } else {
+                            var newWorkoutRef = workoutsRef.push(currentReq);
+                            console.log(newWorkoutRef);
                         }
                     }
                 }
                 
-                var newWorkoutRef = workoutsRef.push(currentReq);
-
+               /* 
                 currentReq['myID'] = newWorkoutRef.key();
                 updateWorkout(newWorkoutRef.key(), currentReq);
-                
                 if (currentReq['matched']) {
                     console.log('logging current one');
 
@@ -138,6 +145,7 @@ app.post('/', function(req, res) {
                     dataToUpdate['matchedWith'] = newKey;
                     updateWorkout(idToUpdate, dataToUpdate);
                 }
+               */
             });
         });
 });
