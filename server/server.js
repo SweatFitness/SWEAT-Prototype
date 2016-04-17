@@ -6,9 +6,6 @@ var express = require('express'),
 var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkouts');
 var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
-
-
-
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -113,11 +110,11 @@ app.post('/', function(req, res) {
                 var snapshot = data.val();
                 for (var id in snapshot) {
                     if (snapshot.hasOwnProperty(id)) {
-                        if(isMatch(snapshot[id], currentReq)) {
-                            console.log('IS A MATCH!!!!');
+                        if (isMatch(snapshot[id], currentReq)) {
                             currentReq['matched'] = true;
                             snapshot[id]['matched'] = true;
                             currentReq['matchedWith'] = id;
+                            snapshot[id]['members'].append(currentReq['ownerUid']);
                             currentReq['partnerUid'] = snapshot[id]['ownerUid'];
                             snapshot[id]['partnerUid'] = currentReq['ownerUid'];
                             idToUpdate = id;
@@ -143,7 +140,6 @@ app.post('/', function(req, res) {
                 }
             });
         });
-
 });
 
 var updateWorkout = function(id, data) {
@@ -165,9 +161,29 @@ var isMatch = function(data, req) {
         shouldMatch = false; // already confirmed. skip!
     } else if (data['ownerUid'] === req['ownerUid']) {
         shouldMatch = false;; // dont wanna match myself. skip!
-    } else if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] !== 'Workout Buddy') {
-        shouldMatch = false;
-    } else if (data['lookingfor'] !== 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
+    }
+    
+
+    /* defer experts on group for now
+    if (data['matchType'] === 'expert') {
+        // expert is not set
+        if (data['expert'] !== '') {
+            // 
+            if (req['lookingfor'] === 'Trainee') {
+                shouldMatch = false;
+            } else {
+                shouldMatch = true;
+            }
+        } else {
+
+        }
+    }
+   */
+
+    // both looking for buddies. match
+    if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
+        shouldMatch = true;
+    } else if (data['matchType'] == 'expert' && req['lookingfor'] == 'Expert') {
         shouldMatch = false;
     } else if (data['lookingfor'] === 'Expert/Trainer' && req['lookingfor'] !== 'Trainee') {
         shouldMatch = false;
