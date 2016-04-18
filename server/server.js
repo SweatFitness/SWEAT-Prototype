@@ -145,7 +145,7 @@ app.post('/', function(req, res) {
                             }
                             idToUpdate = id;
                             dataToUpdate = snapshot[id];
-                            updateWorkout(groupWorkoutsRef, id, snapshot[id]);
+                            updateNewWorkout(groupWorkoutsRef, id, snapshot[id]);
 
                             // Change currently requested workout's info
                             currentReq.matched = true;
@@ -155,7 +155,7 @@ app.post('/', function(req, res) {
                     }
                 }
 
-                updateWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
                 // No match, push a new group workout
                 if (!foundMatchGroup) {
                     groupWorkoutsRef.push({
@@ -174,7 +174,11 @@ app.post('/', function(req, res) {
         });
 });
 
-var updateWorkout = function(ref, id, data) {
+var updateExistingWorkouts = function(ref, id, key, value) {
+    
+}
+
+var updateNewWorkout = function(ref, id, data) {
     ref.child(id).update(
         data
     );
@@ -189,8 +193,8 @@ var isMatch = function(data, req) {
     var shouldMatch = true;
     if (data['isFull']) {  // already matched. skip!
         shouldMatch = false;
-    } else if (data['ownerUid'] === req['ownerUid']) {
-        shouldMatch = false;; // dont wanna match myself. skip!
+    } else if (data['members'].indexOf(req.ownerUid) !== -1) {
+        shouldMatch = false;; // dont wanna add myself again. skip!
     } else if (req['maxPeople'] < data['numPeople'] ) {
         // too many people
         shouldMatch = false;
