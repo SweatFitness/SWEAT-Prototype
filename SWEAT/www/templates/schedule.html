@@ -26,15 +26,21 @@
 <!-------------------------------------------->
 
 <div class="list">
-    <label class="item item-input item-select">
-        <div class="input-label">
-            Workout
-        </div>
-        <select name="workout_type" ng-model="data.workout_type">
-            <option selected>Weightlifting</option>
-            <option>Cardio</option>
-        </select>
-    </label>
+    <div class="item item-divider">
+        Workout Types
+    </div>
+    <div class="item item-divider">
+        Cardio
+    </div>
+    <ion-checkbox ng-repeat="type in data.workoutTypes.Cardio" ng-model="type.selected">
+        {{type.name}}
+    </ion-checkbox>
+    <div class="item item-divider">
+        Weight
+    </div>
+    <ion-checkbox ng-repeat="type in data.workoutTypes.Weight" ng-model="type.selected">
+        {{type.name}}
+    </ion-checkbox>
     <label class="item item-input item-select">
         <div class="input-label">
             Location

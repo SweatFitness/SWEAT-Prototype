@@ -62,6 +62,17 @@ angular.module('starter.controllers')
     $scope.data.endTime = $scope.data.endTimepickerObj.inputEpochTime;
     $scope.data.endDateTime = __makeDateTime(__now, $scope.data.endTime);
 
+    $scope.data.workoutTypes = {
+        Cardio: [
+            {name: 'Running', checked: false}, 
+            {name: 'Cycling', checked: false}, 
+            {name: 'Swimming', checked: false}],
+        Weight: [
+            {name: 'Chest/Triceps', checked: false}, 
+            {name: 'Back/Biceps', checked: false}, 
+            {name: 'Legs/Shoulders', checked: false}]
+    };
+
     $scope.createWorkout = function() {
         var matchType, 
             expert = '';
@@ -75,7 +86,7 @@ angular.module('starter.controllers')
         }
 
         var req = {
-            workout_types: $scope.data.workout_types,
+            workout_types: $scope.makeWorkoutTypesArr(),
             matchType: matchType,
             expert: expert,
             location: $scope.data.location,
@@ -99,6 +110,21 @@ angular.module('starter.controllers')
 
         //Workouts.$add(req);
     };
+
+    $scope.makeWorkoutTypesArr = function() {
+        var arr = [];
+        for (var type in $scope.data.workoutTypes) {
+            if ($scope.data.workoutTypes.hasOwnProperty(type)) {
+                var typesObjs = $scope.data.workoutTypes[type];
+                for (var i = 0; i < typesObjs.length; i++) {
+                    if (typesObjs[i].selected) {
+                        arr.push(typesObjs[i].name);
+                    }
+                }
+            }
+        }
+        return arr;
+    }
 
     $scope.dateStringNoYear = function(date) {
         var components = date.toLocaleDateString().split('/');
