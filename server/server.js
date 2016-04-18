@@ -111,7 +111,7 @@ app.get('/match/', function(req, res) {
 
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
-                if (snapshot[id].matched || snapshot[id].confirmed || snapshot[id].ownerUid == uid) {
+                if (snapshot[id].ownerUid == uid) {
                     groupIDs.push(snapshot[id].matchedTo);
                     infos.push(snapshot[id]);
                 }
