@@ -7,15 +7,15 @@
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in confirmedWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2>{{getUserName(workout.ownerUid)}}</h2>
-                <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
-                <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
+                <h2>{{getUserName(workout.info.ownerUid)}}</h2>
+                <p>At {{workout.info.location}} on {{getDateFrom(workout.info.startDateTime)}}</p>
+                <p>From {{getTimeFrom(workout.info.startDateTime)}} to {{getTimeFrom(workout.info.endDateTime)}}</p>
                 <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.workout_types[workout.workout_types.length-1]">, </span></span></p>
                 <div class="partner-avatar-confirmed">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
                     <h2>{{getUserName(workout.matchedTo.owner)}}</h2>
-                    <p>At {{getWorkout(workout.matchedWith).location}} on {{getDateFrom(getWorkout(workout.matchedWith).startDateTime)}}</p>
-                    <p>From {{getTimeFrom(getWorkout(workout.matchedWith).startDateTime)}} to {{getTimeFrom(getWorkout(workout.matchedWith).endDateTime)}}</p>
+                    <p>And {{workout.matchedTo.numPeople - 2}} other(s) </p>
+                    <p>From {{getTimeFrom(workout.matchedTo.startDateTime)}} to {{getTimeFrom(workout.matchedTo.endDateTime)}}</p>
                     <p>Types: <span ng-repeat="type in getWorkout(workout.matchedWith).workout_types">{{type}}<span ng-show="type!==getWorkout(workout.matchedWith).workout_types[getWorkout(workout.matchedWith).workout_types.length-1]">, </span></span></p>
                 </div>
             </ion-item>
@@ -32,7 +32,7 @@
                 <div class="partner-avatar">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
                     <h2>{{getUserName(workout.matchedTo.owner)}}</h2>
-                    <p>And {{workout.matchedTo.numPeople - 1}} other(s) </p>
+                    <p>And {{workout.matchedTo.numPeople - 2}} other(s) </p>
                     <p>From {{getTimeFrom(workout.matchedTo.startDateTime)}} to {{getTimeFrom(workout.matchedTo.endDateTime)}}</p>
                 </div>
                 <ion-option-button class="button-positive ion-checkmark" 
