@@ -31,9 +31,9 @@ angular.module('starter.controllers')
             params: {'uid': Auth.$getAuth().uid}
         }).then(function(response) {
             var workouts = response.data
-            console.log(workouts);
             $scope.confirmedWorkouts = workouts.confirmed;
             $scope.pendingWorkouts = workouts.pending;
+            console.log(workouts.pending.matchedTo.owner);
             $scope.requestedWorkouts = workouts.requested;
         }, function(error) {
             //TODO: error
