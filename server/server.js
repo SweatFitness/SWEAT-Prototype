@@ -49,20 +49,21 @@ app.get('/confirm/', function(req, res) {
 
 });
 
-/*
-app.get('/forceMatch/', function(req, res) {
-    var uid = req.param('uid');
-    console.log('got GET on forceMatch with uid: ' + uid);
-    workoutRef.once("value", function(data) {
-        var snapshot = data.val();
-        for (var id in snapshot) {
-            if (snapshot.hasOwnProperty(id)) {
-                if (snapshot[id][''])
-            }
-        }
-    })
-});
-*/
+
+// format nice JSON for a new workout group using current request
+var generateNewGroup = function(currentReq) {
+    return {
+        owner: currentReq.ownerUid,
+        ownerWorkout: currentReq.myID,
+        startDateTime: currentReq.startDateTime,
+        endDateTime: currentReq.endDateTime,
+        maxPeople: currentReq.maxPeople,
+        numPeople: 1,
+        memberUids: [currentReq.ownerUid],
+        memberWorkouts: [currentReq.myID],
+        isFull: false,
+    };
+}
 
 var getGroupInfo = function(groupIds, infos, res, handle) {
     if (groupIds.length === 0) {
@@ -73,9 +74,6 @@ var getGroupInfo = function(groupIds, infos, res, handle) {
 
     var info = infos.pop(),
         id = groupIds.pop();
-
-    console.log(info);
-    console.log(id);
 
     groupWorkoutsRef.child(id).once("value", function(data) {
         var snapshot = data.val();
@@ -96,6 +94,8 @@ var getGroupInfo = function(groupIds, infos, res, handle) {
                 'info': info
             });
         }
+        // recurse 
+        // NOTE: this is a MUST because of JS's async behavior
         return getGroupInfo(groupIds, infos, res, handle);
     });
 }
@@ -140,7 +140,6 @@ app.post('/', function(req, res) {
                 newWorkoutRef = workoutsRef.push(currentReq),
                 foundMatchGroup = false;
 
-
             // update the key
             currentReq.myID = newWorkoutRef.key();
 
@@ -148,22 +147,10 @@ app.post('/', function(req, res) {
                 var snapshot = data.val();
                 // No group workouts yet
                 if (!snapshot) {
-                    var newGroupWorkout = {
-                        owner: currentReq.ownerUid,
-                        ownerWorkout: currentReq.myID,
-                        startDateTime: currentReq.startDateTime,
-                        endDateTime: currentReq.endDateTime,
-                        maxPeople: currentReq.maxPeople,
-                        numPeople: 1,
-                        memberUids: [currentReq.ownerUid],
-                        memberWorkouts: [currentReq.myID],
-                        isFull: false,
-                    };
-
-                    groupWorkoutsRef.push(newGroupWorkout).then(function(newGroup) {
+                    groupWorkoutsRef.push(
+                        generateNewGroup(currentReq)
+                    ).then(function(newGroup) {
                         currentReq.matchedTo = newGroup.key();
-                        console.log('updating workout: ');
-                        console.log(currentReq);
                         updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
                         return;
                     });
@@ -196,16 +183,9 @@ app.post('/', function(req, res) {
 
                     // No match, push a new group workout
                     if (!foundMatchGroup) {
-                        groupWorkoutsRef.push({
-                            owner: currentReq.ownerUid,
-                            startDateTime: currentReq.startDateTime,
-                            endDateTime: currentReq.endDateTime,
-                            maxPeople: currentReq.maxPeople,
-                            numPeople: 1,
-                            memberUids: [currentReq.ownerUid],
-                            memberWorkouts: [currentReq.myID],
-                            isFull: false,
-                        }).then(function(newGroup) {
+                        groupWorkoutsRef.push(
+                            generateNewGroup(currentReq)
+                        ).then(function(newGroup) {
                             currentReq.matchedTo = newGroup.key();
                             updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
                         });
