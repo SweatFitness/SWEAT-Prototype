@@ -13,7 +13,8 @@
                 <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.workout_types[workout.workout_types.length-1]">, </span></span></p>
                 <div class="partner-avatar-confirmed">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
-                    <h2>{{getUserName(workout.matchedTo.owner)}}</h2>
+                    <h2 ng-show="workout.info.ownerUid !== workout.matchedTo.owner">{{getUserName(workout.matchedTo.owner)}}</h2>
+                    <h2 ng-show="workout.info.ownerUid === workout.matchedTo.owner">{{getUserName(workout.matchedTo.matchedUids[1])}}</h2>
                     <p>And {{workout.matchedTo.numPeople - 2}} other(s) </p>
                     <p>From {{getTimeFrom(workout.matchedTo.startDateTime)}} to {{getTimeFrom(workout.matchedTo.endDateTime)}}</p>
                 </div>
@@ -30,7 +31,8 @@
                 <i class="ion-arrow-left-c swipe-icon"></i>
                 <div class="partner-avatar">
                     <img class="partner-thumbnail" src="./img/dummy-profile.jpg"></img>
-                    <h2>{{getUserName(workout.matchedTo.owner)}}</h2>
+                    <h2 ng-show="workout.info.ownerUid !== workout.matchedTo.owner">{{getUserName(workout.matchedTo.owner)}}</h2>
+                    <h2 ng-show="workout.info.ownerUid === workout.matchedTo.owner">{{getUsername(workout.matchedTo.matchedUids[1])}}</h2>
                     <p>And {{workout.matchedTo.numPeople - 2}} other(s) </p>
                     <p>From {{getTimeFrom(workout.matchedTo.startDateTime)}} to {{getTimeFrom(workout.matchedTo.endDateTime)}}</p>
                 </div>
