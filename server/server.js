@@ -65,32 +65,64 @@ app.get('/forceMatch/', function(req, res) {
 });
 */
 
+var getGroupInfo = function(groupIds, infos, res, handle) {
+    if (groupIds.length === 0) {
+        console.log(res);
+        handle.send(res);
+        return;
+    }
+
+    var info = infos.pop(),
+        id = groupIds.pop();
+
+    console.log(info);
+    console.log(id);
+
+    groupWorkoutsRef.child(id).once("value", function(data) {
+        var snapshot = data.val();
+        if (info.confirmed) {
+            res.confirmed.push({
+                'matchedTo': snapshot,
+                'info': info
+            });
+        } else if (info.matched && info.ownerUid != snapshot.owner) {
+            res.pending.push({
+                'matchedTo': snapshot,
+                'info': info
+            });
+            console.log(res);
+        } else {
+            res.requested.push({
+                'matchedTo': '', // Do we show this? Technically available
+                'info': info
+            });
+        }
+        return getGroupInfo(groupIds, infos, res, handle);
+    });
+}
+
 app.get('/match/', function(req, res) {
     var uid = req.param('uid');
     console.log('got GET on match with uid: ' + uid);
     workoutsRef.once("value", function(data) {
         var snapshot = data.val();
-        var confirmed = [];
-        var pending = [];
-        var requested = [];
+        var groupIDs = []; // to look up later
+        var infos = [];
+
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
-                if (snapshot[id]['ownerUid'] === uid) {
-                    if (snapshot[id]['confirmed']) {
-                        confirmed.push(snapshot[id]);
-                    } else if (snapshot[id]['matched']) {
-                        pending.push(snapshot[id]);
-                    } else {
-                        requested.push(snapshot[id]);
-                    }
-                }
+                groupIDs.push(snapshot[id].matchedTo);
+                infos.push(snapshot[id]);
             }
         }
-        res.send({
-            'confirmed': confirmed,
-            'pending': pending,
-            'requested': requested,
-        });
+
+        console.log(groupIDs);
+
+        getGroupInfo(groupIDs, infos, {
+            'confirmed': [],
+            'pending': [],
+            'requested': [],
+        }, res);
     });
 });
 
