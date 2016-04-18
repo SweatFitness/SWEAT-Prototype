@@ -41,6 +41,7 @@ angular.module('starter', ['ionic', 'firebase', 'ionic-timepicker', 'starter.con
     })
     .state('tab.schedule', {
         url: '/schedule',
+        parent: 'tab',
         views: {
             'schedule-tab': {
                 templateUrl: 'templates/schedule.html',
@@ -50,6 +51,7 @@ angular.module('starter', ['ionic', 'firebase', 'ionic-timepicker', 'starter.con
     })
     .state('tab.match', {
         url: '/match',
+        parent: 'tab',
         views: {
             'match-tab': {
                 templateUrl: 'templates/match.html',
@@ -59,11 +61,24 @@ angular.module('starter', ['ionic', 'firebase', 'ionic-timepicker', 'starter.con
     })
     .state('tab.today', {
         url: '/today',
+        parent: 'tab',
         views: {
             'today-tab': {
                 templateUrl: 'templates/today.html',
                 controller: 'TodayCtrl'
             }
+        }
+    })
+    .state('tab.match.workoutDetail', {
+        url: '/workoutDetail',
+        views: {
+            'match-tab@tab': {
+                templateUrl: 'templates/workoutDetail.html',
+                controller: 'workoutDetailCtrl'
+            }
+        },
+        params: {
+            workout: {}
         }
     });
 })

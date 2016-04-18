@@ -1,0 +1,27 @@
+<ion-view view-title="Detail">
+<ion-content>
+    <ion-list type="card">
+        <ion-item class="item item-divider">
+            General Info
+        </ion-item>
+        <ion-item class="item-avatar item-text-wrap">
+            <img src="./img/dummy-profile.jpg"></img>
+            <h2>{{getUserName(workout.info.ownerUid)}}</h2>
+            <p>At {{workout.info.location}} on {{getDateFrom(workout.info.startDateTime)}}</p>
+            <p>From {{getTimeFrom(workout.info.startDateTime)}} to {{getTimeFrom(workout.info.endDateTime)}}</p>
+            <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.workout_types[workout.workout_types.length-1]">, </span></span></p>
+        </ion-item>
+        <ion-item class="item item-divider" ng-show="workout.matchedTo">
+            Group Info
+        </ion-item>
+        <ion-item class="item-text-wrap" ng-show="workout.matchedTo">
+        <h2>Members:</h2>
+        <p ng-repeat="uid in workout.matchedTo.matchedUids">
+        {{getUserName(uid)}}
+        <span class="assertive" ng-show="workout.matchedTo.confirmedUids.indexOf(uid) == -1">(Pending)</span>
+        <span class="positive" ng-show="workout.matchedTo.confirmedUids.indexOf(uid) > -1">(Confirmed)</span>
+        </p>
+        </ion-item>
+    </ion-list>
+</ion-content>
+</ion-view>

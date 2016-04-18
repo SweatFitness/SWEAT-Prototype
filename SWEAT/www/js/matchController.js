@@ -76,5 +76,10 @@ angular.module('starter.controllers')
         Workouts.$remove(Workouts.$getRecord(workout.myID));
         $scope.doRefresh();
     }
+
+    $scope.showDetail = function(workout) {
+        console.log('show detail');
+        $state.go('tab.match.workoutDetail');
+    }
 }])
 
