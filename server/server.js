@@ -59,7 +59,8 @@ var generateNewGroup = function(currentReq) {
         endDateTime: currentReq.endDateTime,
         maxPeople: currentReq.maxPeople,
         numPeople: 1,
-        memberUids: [currentReq.ownerUid],
+        matchedUids: [currentReq.ownerUid],
+        confirmedUids: [''], // firebase doesn't like storing empty arrays..
         memberWorkouts: [currentReq.myID],
         isFull: false,
     };
@@ -110,18 +111,37 @@ app.get('/match/', function(req, res) {
 
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
-                groupIDs.push(snapshot[id].matchedTo);
-                infos.push(snapshot[id]);
+                if (snapshot[id].matched || snapshot[id].confirmed || snapshot[id].ownerUid == uid) {
+                    groupIDs.push(snapshot[id].matchedTo);
+                    infos.push(snapshot[id]);
+                }
             }
         }
-
-        console.log(groupIDs);
-
         getGroupInfo(groupIDs, infos, {
             'confirmed': [],
             'pending': [],
             'requested': [],
         }, res);
+    });
+});
+
+app.post('/confirm/', function(req, res) {
+    var jsonStr = '';
+
+    req.on('data', function(data) {
+        jsonStr += data;
+    });
+
+    req.on('end', function() {
+        currentReq = JSON.parse(jsonStr);
+        
+        // first update the request
+        currentReq.info.confirmed = true;
+        updateNewWorkout(workoutsRef, currentReq.info.myID, currentReq.info);
+
+        // update the group next
+        currentReq.matchedTo.confirmedUids.push(currentReq.info.ownerUid);
+        updateNewWorkout(groupWorkoutsRef, currentReq.matchedTo.myID, currentReq.matchedTo); 
     });
 });
 
@@ -147,11 +167,12 @@ app.post('/', function(req, res) {
                 var snapshot = data.val();
                 // No group workouts yet
                 if (!snapshot) {
-                    groupWorkoutsRef.push(
-                        generateNewGroup(currentReq)
-                    ).then(function(newGroup) {
+                    var group = generateNewGroup(currentReq);
+                    groupWorkoutsRef.push(group).then(function(newGroup) {
                         currentReq.matchedTo = newGroup.key();
+                        group.myID = newGroup.key();
                         updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                        updateNewWorkout(groupWorkoutsRef, newGroup.key(), group);
                         return;
                     });
                 } else {
@@ -162,7 +183,7 @@ app.post('/', function(req, res) {
                                 foundMatchGroup = true;
 
                                 // Change the existing workout group info
-                                snapshot[id].memberUids.push(currentReq.ownerUid);
+                                snapshot[id].matchedUids.push(currentReq.ownerUid);
                                 snapshot[id].memberWorkouts.push(currentReq.myID);
                                 snapshot[id].numPeople = snapshot[id].numPeople + 1
                                 if (snapshot[id].numPeople == snapshot[id].maxPeople) {
@@ -183,11 +204,12 @@ app.post('/', function(req, res) {
 
                     // No match, push a new group workout
                     if (!foundMatchGroup) {
-                        groupWorkoutsRef.push(
-                            generateNewGroup(currentReq)
-                        ).then(function(newGroup) {
+                        var group = generateNewGroup(currentReq)
+                        groupWorkoutsRef.push(group).then(function(newGroup) {
                             currentReq.matchedTo = newGroup.key();
+                            group.myID = newGroup.key();
                             updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                            updateNewWorkout(groupWorkoutsRef, newGroup.key(), group);
                         });
                         return;
                     } else {
@@ -221,7 +243,7 @@ var isMatch = function(data, req) {
     var shouldMatch = true;
     if (data['isFull']) {  // already matched. skip!
         shouldMatch = false;
-    } else if (data['memberUids'].indexOf(req.ownerUid) !== -1) {
+    } else if (data['matchedUids'].indexOf(req.ownerUid) !== -1) {
         shouldMatch = false;; // dont wanna add myself again. skip!
     } else if (req['maxPeople'] < data['numPeople'] ) {
         // too many people

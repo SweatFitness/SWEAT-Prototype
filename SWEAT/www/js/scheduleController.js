@@ -96,6 +96,7 @@ angular.module('starter.controllers')
             ownerUid: Auth.$getAuth().uid,
             maxPeople: $scope.data.maxPeople,
             matched: false,
+            confirmed: false,
             matchedTo: '',
             myID: ''
         };

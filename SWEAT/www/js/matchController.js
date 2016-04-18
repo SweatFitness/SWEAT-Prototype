@@ -47,13 +47,13 @@ angular.module('starter.controllers')
     }
 
     $scope.confirmWorkout = function(workout) {
-        console.log(workout.myID);
-        var workoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);     
-        var partnerWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.matchedWith);
-        partnerWorkoutRef.child('confirmed').set(true);
-        workoutRef.child('confirmed').set(true);      
-        $ionicListDelegate.closeOptionButtons();      
-        scope.doRefresh();
+        $http({
+            method: 'POST',
+            url: apiEndpoint + '/confirm/',
+            data: workout,
+            headers: {'Content-Type': 'applications/x-www-form-urlencoded'}
+        });
+        $scope.doRefresh();
     }
 
     $scope.declineWorkout = function(workout) {
