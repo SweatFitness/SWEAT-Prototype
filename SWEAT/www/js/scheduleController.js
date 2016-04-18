@@ -85,7 +85,8 @@ angular.module('starter.controllers')
             ownerUid: Auth.$getAuth().uid,
             maxPeople: $scope.data.maxPeople,
             members: [Auth.$getAuth().uid],
-            isFull: false,
+            matched: false,
+            matchedTo: '',
             myID: ''
         };
         console.log('Creating workout: ' +  JSON.stringify(req));

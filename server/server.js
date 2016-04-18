@@ -3,7 +3,8 @@ var express = require('express'),
     bodyparser = require('body-parser'),
     firebase = require('firebase');
 
-var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkout');
+var workoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts');
+var groupWorkoutsRef = new Firebase('https://sweat-fitness.firebaseio.com/groupWorkouts');
 var usersRef = new Firebase('https://sweat-fitness.firebaseio.com/users');
 
 app.all('*', function(req, res, next) {
@@ -102,56 +103,79 @@ app.post('/', function(req, res) {
         });
 
         req.on('end', function() {
-            var currentReq = JSON.parse(jsonStr);
-            console.log(currentReq);
-            var idToUpdate;
-            var dataToUpdate = {};
+            var idToUpdate,
+                currentReq = JSON.parse(jsonStr),
+                dataToUpdate = {},
+                newWorkoutRef = workoutsRef.push(currentReq),
+                foundMatchGroup = false;
 
-            workoutsRef.once("value", function(data) {
+
+            // update the key
+            currentReq.myID = newWorkoutRef.key();
+
+            groupWorkoutsRef.once("value", function(data) {
                 var snapshot = data.val();
-                // No workouts yet
+                // No group workouts yet
                 if (!snapshot) {
-                    workoutsRef.push(currentReq);
+                    var newGroupWorkout = {
+                        owner: currentReq.ownerUid,
+                        startDateTime: currentReq.startDateTime,
+                        endDateTime: currentReq.endDateTime,
+                        maxPeople: currentReq.maxPeople,
+                        numPeople: 1,
+                        memberUids: [currentReq.ownerUid],
+                        memberWorkouts: [currentReq.myID],
+                        isFull: false,
+                    };
+                    groupWorkoutsRef.push(newGroupWorkout);
                     return;
                 }
                 for (var id in snapshot) {
                     if (snapshot.hasOwnProperty(id)) {
                         if (isMatch(snapshot[id], currentReq)) {
                             console.log('is a match!');
-                            snapshot[id]['members'].push(currentReq['ownerUid']);
-                            if (snapshot[id]['members'].length == snapshot[id]['maxPeople']) {
-                                snapshot[id]['isFull'] = true;
+                            foundMatchGroup = true;
+
+                            // Change the existing workout group info
+                            snapshot[id].memberUids.push(currentReq.ownerUid);
+                            snapshot[id].memberWorkouts.push(currentReq.myID);
+                            snapshot[id].numPeople = snapshot[id].numPeople + 1
+                            if (snapshot[id].numPeople == snapshot[id].maxPeople) {
+                                snapshot[id].isFull = true;
                             }
                             idToUpdate = id;
                             dataToUpdate = snapshot[id];
-                            updateWorkout(id, snapshot[id]);
+                            updateWorkout(groupWorkoutsRef, id, snapshot[id]);
+
+                            // Change currently requested workout's info
+                            currentReq.matched = true;
+                            currentReq.matchedTo = id;
                             break;
-                        } else {
-                            var newWorkoutRef = workoutsRef.push(currentReq);
-                            console.log(newWorkoutRef);
                         }
                     }
                 }
-                
-               /* 
-                currentReq['myID'] = newWorkoutRef.key();
-                updateWorkout(newWorkoutRef.key(), currentReq);
-                if (currentReq['matched']) {
-                    console.log('logging current one');
 
-                    var newKey = newWorkoutRef.key();
-                    console.log('updating id: ' + idToUpdate);
-                    console.log('key is ' + newKey);
-                    dataToUpdate['matchedWith'] = newKey;
-                    updateWorkout(idToUpdate, dataToUpdate);
+                updateWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                // No match, push a new group workout
+                if (!foundMatchGroup) {
+                    groupWorkoutsRef.push({
+                        owner: currentReq.ownerUid,
+                        startDateTime: currentReq.startDateTime,
+                        endDateTime: currentReq.endDateTime,
+                        maxPeople: currentReq.maxPeople,
+                        numPeople: 1,
+                        memberUids: [currentReq.ownerUid],
+                        memberWorkouts: [currentReq.myID],
+                        isFull: false,
+                    });
+                    return;
                 }
-               */
             });
         });
 });
 
-var updateWorkout = function(id, data) {
-    workoutsRef.child(id).update(
+var updateWorkout = function(ref, id, data) {
+    ref.child(id).update(
         data
     );
 }
@@ -165,12 +189,12 @@ var isMatch = function(data, req) {
     var shouldMatch = true;
     if (data['isFull']) {  // already matched. skip!
         shouldMatch = false;
-    } else if (data['confirmed']) {
-        shouldMatch = false; // already confirmed. skip!
     } else if (data['ownerUid'] === req['ownerUid']) {
         shouldMatch = false;; // dont wanna match myself. skip!
+    } else if (req['maxPeople'] < data['numPeople'] ) {
+        // too many people
+        shouldMatch = false;
     }
-    
 
     /* defer experts on group for now
     if (data['matchType'] === 'expert') {
@@ -207,14 +231,14 @@ var isMatch = function(data, req) {
         return false;
     }
 
-    var firstGuyStartTime = new Date(req['startDateTime']),
-        firstGuyEndTime = new Date(req['endDateTime']),
-        secondGuyStartTime = new Date(data['startDateTime']),
-        secondGuyEndTime = new Date(data['endDateTime']);
+    var groupStartTime = new Date(req['startDateTime']),
+        groupEndTime = new Date(req['endDateTime']),
+        reqStartTime = new Date(data['startDateTime']),
+        reqEndTime = new Date(data['endDateTime']);
 
-    if (dates.inRange(firstGuyStartTime, secondGuyStartTime, secondGuyEndTime)) {
+    if (dates.inRange(groupStartTime, reqStartTime, reqEndTime)) {
         return true;
-    } else if (dates.inRange(secondGuyStartTime, firstGuyStartTime, firstGuyEndTime)) {
+    } else if (dates.inRange(reqStartTime, groupStartTime, groupEndTime)) {
         return true;
     } else {
         console.log('dates dont match');
