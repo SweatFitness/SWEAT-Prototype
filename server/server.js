@@ -119,6 +119,7 @@ app.post('/', function(req, res) {
                 if (!snapshot) {
                     var newGroupWorkout = {
                         owner: currentReq.ownerUid,
+                        ownerWorkout: currentReq.myID,
                         startDateTime: currentReq.startDateTime,
                         endDateTime: currentReq.endDateTime,
                         maxPeople: currentReq.maxPeople,
@@ -127,7 +128,10 @@ app.post('/', function(req, res) {
                         memberWorkouts: [currentReq.myID],
                         isFull: false,
                     };
-                    groupWorkoutsRef.push(newGroupWorkout);
+
+                    var newGroup = groupWorkoutsRef.push(newGroupWorkout);
+                    currentReq.matchedTo = newGroup.key();
+                    updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
                     return;
                 }
                 for (var id in snapshot) {
@@ -145,7 +149,9 @@ app.post('/', function(req, res) {
                             }
                             idToUpdate = id;
                             dataToUpdate = snapshot[id];
+
                             updateNewWorkout(groupWorkoutsRef, id, snapshot[id]);
+                            updateExistingWorkout(workoutsRef, snapshot[id].ownerWorkout)
 
                             // Change currently requested workout's info
                             currentReq.matched = true;
@@ -174,11 +180,14 @@ app.post('/', function(req, res) {
         });
 });
 
-var updateExistingWorkouts = function(ref, id, key, value) {
-    
+var updateExistingWorkout = function(ref, id, matchedTo) {
+    ref.child(id).update({
+        'matched': true
+    });
 }
 
 var updateNewWorkout = function(ref, id, data) {
+    console.log('update New workout on ID:' + id);
     ref.child(id).update(
         data
     );
@@ -193,7 +202,7 @@ var isMatch = function(data, req) {
     var shouldMatch = true;
     if (data['isFull']) {  // already matched. skip!
         shouldMatch = false;
-    } else if (data['members'].indexOf(req.ownerUid) !== -1) {
+    } else if (data['memberUids'].indexOf(req.ownerUid) !== -1) {
         shouldMatch = false;; // dont wanna add myself again. skip!
     } else if (req['maxPeople'] < data['numPeople'] ) {
         // too many people
