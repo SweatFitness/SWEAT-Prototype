@@ -83,7 +83,7 @@ var getGroupInfo = function(groupIds, infos, res, handle) {
                 'matchedTo': snapshot,
                 'info': info
             });
-        } else if (info.matched && info.ownerUid != snapshot.owner) {
+        } else if (info.matched) {
             res.pending.push({
                 'matchedTo': snapshot,
                 'info': info
@@ -141,7 +141,7 @@ app.post('/confirm/', function(req, res) {
 
         // update the group next
         currentReq.matchedTo.confirmedUids.push(currentReq.info.ownerUid);
-        updateNewWorkout(groupWorkoutsRef, currentReq.matchedTo.myID, currentReq.matchedTo); 
+        return updateNewWorkout(groupWorkoutsRef, currentReq.matchedTo.myID, currentReq.matchedTo); 
     });
 });
 
