@@ -14,7 +14,6 @@ app.all('*', function(req, res, next) {
     next();
 });
 
-
 app.use(bodyparser.json());
 
 app.listen(process.env.PORT || 8080);
@@ -161,52 +160,59 @@ app.post('/', function(req, res) {
                         isFull: false,
                     };
 
-                    var newGroup = groupWorkoutsRef.push(newGroupWorkout);
-                    currentReq.matchedTo = newGroup.key();
-                    updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
-                    return;
-                }
-                for (var id in snapshot) {
-                    if (snapshot.hasOwnProperty(id)) {
-                        if (isMatch(snapshot[id], currentReq)) {
-                            console.log('is a match!');
-                            foundMatchGroup = true;
+                    groupWorkoutsRef.push(newGroupWorkout).then(function(newGroup) {
+                        currentReq.matchedTo = newGroup.key();
+                        console.log('updating workout: ');
+                        console.log(currentReq);
+                        updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                        return;
+                    });
+                } else {
+                    for (var id in snapshot) {
+                        if (snapshot.hasOwnProperty(id)) {
+                            if (isMatch(snapshot[id], currentReq)) {
+                                console.log('is a match!');
+                                foundMatchGroup = true;
 
-                            // Change the existing workout group info
-                            snapshot[id].memberUids.push(currentReq.ownerUid);
-                            snapshot[id].memberWorkouts.push(currentReq.myID);
-                            snapshot[id].numPeople = snapshot[id].numPeople + 1
-                            if (snapshot[id].numPeople == snapshot[id].maxPeople) {
-                                snapshot[id].isFull = true;
+                                // Change the existing workout group info
+                                snapshot[id].memberUids.push(currentReq.ownerUid);
+                                snapshot[id].memberWorkouts.push(currentReq.myID);
+                                snapshot[id].numPeople = snapshot[id].numPeople + 1
+                                if (snapshot[id].numPeople == snapshot[id].maxPeople) {
+                                    snapshot[id].isFull = true;
+                                }
+                                idToUpdate = id;
+                                dataToUpdate = snapshot[id];
+
+                                updateNewWorkout(groupWorkoutsRef, id, snapshot[id]);
+                                updateExistingWorkout(workoutsRef, snapshot[id].ownerWorkout)
+                                // Change currently requested workout's info
+                                currentReq.matched = true;
+                                currentReq.matchedTo = id;
+                                break;
                             }
-                            idToUpdate = id;
-                            dataToUpdate = snapshot[id];
-
-                            updateNewWorkout(groupWorkoutsRef, id, snapshot[id]);
-                            updateExistingWorkout(workoutsRef, snapshot[id].ownerWorkout)
-
-                            // Change currently requested workout's info
-                            currentReq.matched = true;
-                            currentReq.matchedTo = id;
-                            break;
                         }
                     }
-                }
 
-                updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
-                // No match, push a new group workout
-                if (!foundMatchGroup) {
-                    groupWorkoutsRef.push({
-                        owner: currentReq.ownerUid,
-                        startDateTime: currentReq.startDateTime,
-                        endDateTime: currentReq.endDateTime,
-                        maxPeople: currentReq.maxPeople,
-                        numPeople: 1,
-                        memberUids: [currentReq.ownerUid],
-                        memberWorkouts: [currentReq.myID],
-                        isFull: false,
-                    });
-                    return;
+                    // No match, push a new group workout
+                    if (!foundMatchGroup) {
+                        groupWorkoutsRef.push({
+                            owner: currentReq.ownerUid,
+                            startDateTime: currentReq.startDateTime,
+                            endDateTime: currentReq.endDateTime,
+                            maxPeople: currentReq.maxPeople,
+                            numPeople: 1,
+                            memberUids: [currentReq.ownerUid],
+                            memberWorkouts: [currentReq.myID],
+                            isFull: false,
+                        }).then(function(newGroup) {
+                            currentReq.matchedTo = newGroup.key();
+                            updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                        });
+                        return;
+                    } else {
+                        updateNewWorkout(workoutsRef, newWorkoutRef.key(), currentReq);
+                    }
                 }
             });
         });
@@ -220,6 +226,7 @@ var updateExistingWorkout = function(ref, id, matchedTo) {
 
 var updateNewWorkout = function(ref, id, data) {
     console.log('update New workout on ID:' + id);
+    console.log(data);
     ref.child(id).update(
         data
     );
