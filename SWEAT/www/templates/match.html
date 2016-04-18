@@ -47,13 +47,13 @@
             </div>
             <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in requestedWorkouts">
                 <img src="./img/dummy-profile.jpg"></img>
-                <h2>{{getUserName(workout.ownerUid)}}</h2>
-                <p>At {{workout.location}} on {{getDateFrom(workout.startDateTime)}}</p>
-                <p>From {{getTimeFrom(workout.startDateTime)}} to {{getTimeFrom(workout.endDateTime)}}</p>
-                <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.workout_types[workout.workout_types.length-1]">, </span></span></p>
+                <h2>{{getUserName(workout.info.ownerUid)}}</h2>
+                <p>At {{workout.info.location}} on {{getDateFrom(workout.info.startDateTime)}}</p>
+                <p>From {{getTimeFrom(workout.info.startDateTime)}} to {{getTimeFrom(workout.info.endDateTime)}}</p>
+                <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.info.workout_types[workout.info.workout_types.length-1]">, </span></span></p>
                 <i class="ion-arrow-left-c swipe-icon"></i>
                 <ion-option-button class="button-assertive ion-close" 
-                                    ng-click="deleteWorkout(workout)">
+                                    ng-click="deleteWorkout(workout.info)">
                 </ion-option-button>
             </ion-item>
         </ion-list>

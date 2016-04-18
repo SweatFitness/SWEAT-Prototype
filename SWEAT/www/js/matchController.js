@@ -33,7 +33,6 @@ angular.module('starter.controllers')
             var workouts = response.data
             $scope.confirmedWorkouts = workouts.confirmed;
             $scope.pendingWorkouts = workouts.pending;
-            console.log(workouts.pending.matchedTo.owner);
             $scope.requestedWorkouts = workouts.requested;
         }, function(error) {
             //TODO: error
@@ -73,6 +72,7 @@ angular.module('starter.controllers')
 
     $scope.deleteWorkout = function(workout) {
         console.log('delete');
+        console.log(workout.myID);
         Workouts.$remove(Workouts.$getRecord(workout.myID));
         $scope.doRefresh();
     }
