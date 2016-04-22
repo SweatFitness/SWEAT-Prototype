@@ -16,7 +16,7 @@ app.all('*', function(req, res, next) {
 
 app.use(bodyparser.json());
 
-app.listen(process.env.PORT || 8080);
+app.listen(process.env.PORT || 5000);
 
 app.get('/today/', function(req, res) {
     var uid = req.param('uid');
@@ -31,6 +31,8 @@ app.get('/today/', function(req, res) {
                     continue; // Don't want to see my own ones
                 } else if (snapshot[id]['matched']) {
                     continue; // skip matched ones 
+                } else if (snapshot[id]['confirmed']) {
+                    continue;
                 }
 
                 if (dates.areSameDate(startDT, new Date())) {
@@ -75,6 +77,13 @@ var getGroupInfo = function(groupIds, infos, res, handle) {
 
     var info = infos.pop(),
         id = groupIds.pop();
+
+
+    // 4/16/2016: Issue with certain workouts not having matchedTo and myID on a very rare occasion
+    // cannot reproduce; hotfixing for now
+    if (id == '') {
+        return getGroupInfo(groupIds, infos, res, handle);
+    }
 
     groupWorkoutsRef.child(id).once("value", function(data) {
         var snapshot = data.val();
