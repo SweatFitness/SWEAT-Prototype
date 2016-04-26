@@ -6,9 +6,10 @@
     <ion-item class="item-avatar item-text-wrap" ng-repeat="workout in todaysWorkouts">
         <img src="./img/dummy-profile.jpg"></img>
         <h2>{{getUserName(workout.group.owner)}}</h2>
-        <p>At {{workout.memberWorkout.location}} on {{getDateFrom(workout.group.startDateTime)}}</p>
+        <p>At {{workout.workout_location}} on {{getDateFrom(workout.group.startDateTime)}}</p>
         <p>From {{getTimeFrom(workout.group.startDateTime)}} to {{getTimeFrom(workout.group.endDateTime)}}</p>
-        <p>Types: <span ng-repeat="type in workout.memberWorkout.workout_types">{{type}}<span ng-show="type!==workout.memberWorkout.workout_types[workout.memberWorkout.workout_types.length-1]">, </span></span></p>
+        <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.workout_types[workout.workout_types.length-1]">, </span></span></p>
+        <i class="ion-arrow-left-c swipe-icon"></i>
     <ion-option-button class="button-positive ion-checkmark" 
                         ng-click="confirmWorkout(workout)">
     </ion-option-button>

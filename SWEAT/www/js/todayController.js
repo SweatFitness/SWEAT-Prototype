@@ -10,7 +10,7 @@ angular.module('starter.controllers')
         }).then(function(response) {
             var workouts = response.data
             console.log(workouts);
-            $scope.todaysWorkouts = workouts.today;
+            $scope.todaysWorkouts = workouts;
         }, function(error) {
             //TODO: error
         }).finally(function() {
