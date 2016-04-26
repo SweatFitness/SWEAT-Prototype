@@ -285,26 +285,10 @@ var isMatch = function(data, req) {
         shouldMatch = false;
     } else if (data['matchedUids'].indexOf(req.ownerUid) !== -1) {
         shouldMatch = false;; // dont wanna add myself again. skip!
-    } else if (req['maxPeople'] < data['numPeople'] ) {
+    } else if (req['maxPeople'] < data['maxPeople'] ) {
         // too many people
         shouldMatch = false;
     }
-
-    /* defer experts on group for now
-    if (data['matchType'] === 'expert') {
-        // expert is not set
-        if (data['expert'] !== '') {
-            // 
-            if (req['lookingfor'] === 'Trainee') {
-                shouldMatch = false;
-            } else {
-                shouldMatch = true;
-            }
-        } else {
-
-        }
-    }
-   */
 
     // both looking for buddies. match
     if (data['lookingfor'] === 'Workout Buddy' && req['lookingfor'] === 'Workout Buddy') {
