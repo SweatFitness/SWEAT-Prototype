@@ -38,13 +38,6 @@ angular.module('starter.controllers')
     }
     $scope.confirmWorkout = function(workout) {
         console.log(workout.myID);
-        var workoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.myID);     
-        var partnerWorkoutRef = new Firebase('https://sweat-fitness.firebaseio.com/workouts/' + workout.matchedWith);
-        partnerWorkoutRef.child('confirmed').set(true);
-        workoutRef.child('confirmed').set(true);
-        partnerWorkoutRef.child('matchedWith').set(workout.myID);
-        workoutRef.child('matchedWith').set(partnerWorkoutRef.child('myID'));
-        $ionicListDelegate.closeOptionButtons();
         scope.doRefresh();
     }
 }])

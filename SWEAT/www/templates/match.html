@@ -51,7 +51,7 @@
                 <h2>{{getUserName(workout.info.ownerUid)}}</h2>
                 <p>At {{workout.info.location}} on {{getDateFrom(workout.info.startDateTime)}}</p>
                 <p>From {{getTimeFrom(workout.info.startDateTime)}} to {{getTimeFrom(workout.info.endDateTime)}}</p>
-                <p>Types: <span ng-repeat="type in workout.workout_types">{{type}}<span ng-show="type!==workout.info.workout_types[workout.info.workout_types.length-1]">, </span></span></p>
+                <p>Types: <span ng-repeat="type in workout.info.workout_types">{{type}}<span ng-show="type!==workout.info.workout_types[workout.info.workout_types.length-1]">, </span></span></p>
                 <i class="ion-arrow-left-c swipe-icon"></i>
                 <ion-option-button class="button-assertive ion-close" 
                                     ng-click="deleteWorkout(workout.info)">
