@@ -32,9 +32,16 @@ app.get('/today/', function(req, res) {
                 } else if (snapshot[id]['isFull']) {
                     continue; // skip matched ones 
                 }
-                if (dates.areSameDate(startDT, new Date())) { // check if this is happening today
-                    today.push(snapshot[id]);
+                if (!(dates.areSameDate(startDT, new Date()))) { // check if this is happening today
+                    continue;
                 }
+                var id = snapshot[id].memberWorkouts[0];
+                workoutsRef.child(id).once('value', function(data) {
+                    today.push({
+                        'group': snapshot[id],
+                        'workout': data
+                    });
+                });
             }
         }
 
