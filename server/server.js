@@ -21,7 +21,7 @@ app.listen(process.env.PORT || 5000);
 app.get('/today/', function(req, res) {
     var uid = req.param('uid');
     console.log('got GET on today with uid: ' + uid);
-    workoutsRef.once("value", function(data) {
+    groupWorkoutsRef.once("value", function(data) {
         var snapshot = data.val();
         var today = [];
         for (var id in snapshot) {
@@ -29,13 +29,10 @@ app.get('/today/', function(req, res) {
                 var startDT = new Date(snapshot[id]['startDateTime']);
                 if (snapshot[id]['ownerUid'] === uid) {
                     continue; // Don't want to see my own ones
-                } else if (snapshot[id]['matched']) {
+                } else if (snapshot[id]['isFull']) {
                     continue; // skip matched ones 
-                } else if (snapshot[id]['confirmed']) {
-                    continue;
                 }
-
-                if (dates.areSameDate(startDT, new Date())) {
+                if (dates.areSameDate(startDT, new Date())) { // check if this is happening today
                     today.push(snapshot[id]);
                 }
             }
