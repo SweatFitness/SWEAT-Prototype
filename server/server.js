@@ -24,6 +24,8 @@ app.get('/today/', function(req, res) {
     groupWorkoutsRef.once("value", function(data) {
         var snapshot = data.val();
         var today = [];
+        var groups = [];
+        var workoutIDs = [];
         for (var id in snapshot) {
             if (snapshot.hasOwnProperty(id)) {
                 var startDT = new Date(snapshot[id]['startDateTime']);
@@ -35,21 +37,46 @@ app.get('/today/', function(req, res) {
                 if (!(dates.areSameDate(startDT, new Date()))) { // check if this is happening today
                     continue;
                 }
-                var id = snapshot[id].memberWorkouts[0];
-                workoutsRef.child(id).once('value', function(data) {
+                var member_id = snapshot[id].memberWorkouts[0];
+                groups.push(snapshot[id]);
+                workoutIDs.push(member_id);
+
+                /*
+                console.log(member_id);
+                workoutsRef.child(member_id).once('value', function(data) {
+                    console.log(data.val());
                     today.push({
                         'group': snapshot[id],
-                        'workout': data
+                        'workout_location': data.val().location,
+                        'workout_types': data.val().workout_types
                     });
                 });
+                */
             }
         }
-
-        res.send({
-            'today': today
-        });
+        todayRespond(groups, workoutIDs, res, []);
     });
 });
+
+var todayRespond = function(groups, workoutIDs, res, res_payload) {
+    if (groups.length == 0) {
+        return res.send(res_payload);
+    }
+
+    var group = groups.pop(),
+        workoutID = workoutIDs.pop();
+
+    workoutsRef.child(workoutID).once('value', function(data) {
+        res_payload.push({
+                'group': group,
+                'workout_location': data.val().location,
+                'workout_types': data.val().workout_types,
+        });
+        return todayRespond(groups, workoutIDs, res, res_payload);
+    });
+}
+
+
 
 app.get('/confirm/', function(req, res) {
 
